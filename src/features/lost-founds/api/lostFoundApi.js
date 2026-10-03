@@ -1,6 +1,6 @@
 import apiHelper from "../../../helpers/apiHelper";
 
-const BASE_URL = DELCOM_BASEURL;
+const BASE_URL = import.meta.env.VITE_DELCOM_BASEURL;
 
 export const lostFoundApi = {
   // 1. Mengambil daftar barang hilang & temuan (dengan filter)
