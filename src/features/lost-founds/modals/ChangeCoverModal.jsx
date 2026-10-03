@@ -55,9 +55,10 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
           <h2 className="text-xl font-bold text-slate-800">Unggah Foto Cover</h2>
           <button
             onClick={onClose}
+            aria-label="Tutup Dialog Unggah Foto Cover"
             className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
           >
-            <IconX size={20} />
+            <IconX size={20} aria-hidden="true" />
           </button>
         </div>
 
@@ -90,6 +91,7 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
             <button
               type="button"
               onClick={onClose}
+              aria-label="Batal Unggah Foto Cover"
               className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
             >
               Batal
