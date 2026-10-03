@@ -11,7 +11,6 @@ import {
 import { showErrorDialog } from "../../../helpers/toolsHelper";
 import {
   IconUser,
-  IconLock,
   IconCamera,
   IconCheck,
   IconLoader2,
@@ -131,8 +130,8 @@ function ProfilePage() {
   if (!profile) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
-        <IconLoader2 size={36} className="text-indigo-600 animate-spin mb-2" />
-        <p className="text-sm font-medium text-slate-600">Memuat data profil...</p>
+        <IconLoader2 size={36} className="text-blue-700 animate-spin mb-2" />
+        <p className="text-sm font-semibold text-slate-700">Memuat data profil...</p>
       </div>
     );
   }
@@ -143,29 +142,32 @@ function ProfilePage() {
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           Profil Akun
         </h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="text-sm text-slate-700 font-medium mt-1">
           Kelola informasi identitas, foto profil, dan keamanan akun Anda.
         </p>
       </div>
 
       {/* Profile Card Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center gap-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center gap-6">
         <div className="relative group">
           {profile.photo ? (
             <img
               src={profile.photo}
-              alt={profile.name}
-              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md ring-2 ring-indigo-100"
+              alt=""
+              aria-hidden="true"
+              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md ring-2 ring-blue-100"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-bold text-3xl shadow-md">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-700 to-cyan-600 text-white flex items-center justify-center font-bold text-3xl shadow-md">
               {profile.name?.charAt(0)?.toUpperCase() || "U"}
             </div>
           )}
 
           <label
+            htmlFor="profile-photo-file-input"
             data-testid="upload-profile-photo-btn"
-            className="absolute bottom-0 right-0 p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md cursor-pointer transition-transform hover:scale-105"
+            aria-label="Ubah Foto Profil"
+            className="absolute bottom-0 right-0 p-2 rounded-full bg-blue-700 hover:bg-blue-800 text-white shadow-md cursor-pointer transition-transform hover:scale-105"
             title="Ubah Foto Profil"
           >
             {loadingPhoto ? (
@@ -174,8 +176,10 @@ function ProfilePage() {
               <IconCamera size={16} />
             )}
             <input
+              id="profile-photo-file-input"
               type="file"
               data-testid="profile-photo-file-input"
+              aria-label="Pilih berkas foto profil"
               accept="image/*"
               onChange={handlePhotoUpload}
               className="hidden"
@@ -184,10 +188,10 @@ function ProfilePage() {
         </div>
 
         <div className="text-center sm:text-left space-y-1">
-          <h2 className="text-xl font-bold text-slate-800">{profile.name}</h2>
-          <p className="text-sm text-slate-500">{profile.email}</p>
+          <h2 className="text-xl font-bold text-slate-900">{profile.name}</h2>
+          <p className="text-sm text-slate-700 font-medium">{profile.email}</p>
           <div className="pt-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
               <IconCheck size={14} /> Terverifikasi
             </span>
           </div>
@@ -196,39 +200,49 @@ function ProfilePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Form Biodata */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-5">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
               <IconUser size={18} />
             </div>
-            <h3 className="font-bold text-slate-800">Ubah Biodata</h3>
+            <h3 className="font-bold text-slate-900">Ubah Biodata</h3>
           </div>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+              <label
+                htmlFor="profile-name-input"
+                className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+              >
                 Nama Lengkap
               </label>
               <input
+                id="profile-name-input"
                 type="text"
                 data-testid="profile-name-input"
+                aria-label="Nama Lengkap"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+              <label
+                htmlFor="profile-email-input"
+                className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+              >
                 Alamat Email
               </label>
               <input
+                id="profile-email-input"
                 type="email"
                 data-testid="profile-email-input"
+                aria-label="Alamat Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
                 required
               />
             </div>
@@ -238,7 +252,7 @@ function ProfilePage() {
                 type="submit"
                 data-testid="submit-profile-btn"
                 disabled={loadingProfile}
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-md shadow-indigo-600/25 transition-all disabled:opacity-60"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 active:bg-blue-900 rounded-xl shadow-md transition-all disabled:opacity-60 cursor-pointer"
               >
                 {loadingProfile ? (
                   <>
@@ -254,56 +268,71 @@ function ProfilePage() {
         </div>
 
         {/* Form Ganti Password */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-5">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
               <IconShieldLock size={18} />
             </div>
-            <h3 className="font-bold text-slate-800">Keamanan & Password</h3>
+            <h3 className="font-bold text-slate-900">Keamanan & Password</h3>
           </div>
 
           <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+              <label
+                htmlFor="current-password-input"
+                className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+              >
                 Kata Sandi Saat Ini
               </label>
               <input
+                id="current-password-input"
                 type="password"
                 data-testid="current-password-input"
+                aria-label="Kata Sandi Saat Ini"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 placeholder="••••••"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+              <label
+                htmlFor="new-password-input"
+                className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+              >
                 Kata Sandi Baru
               </label>
               <input
+                id="new-password-input"
                 type="password"
                 data-testid="new-password-input"
+                aria-label="Kata Sandi Baru"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimal 6 karakter"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+              <label
+                htmlFor="confirm-password-input"
+                className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+              >
                 Ulangi Kata Sandi Baru
               </label>
               <input
+                id="confirm-password-input"
                 type="password"
                 data-testid="confirm-password-input"
+                aria-label="Ulangi Kata Sandi Baru"
                 value={newPasswordConfirmation}
                 onChange={(e) => setNewPasswordConfirmation(e.target.value)}
                 placeholder="Konfirmasi kata sandi"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
                 required
               />
             </div>
@@ -313,7 +342,7 @@ function ProfilePage() {
                 type="submit"
                 data-testid="submit-password-btn"
                 disabled={loadingPassword}
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 rounded-xl shadow-md transition-all disabled:opacity-60"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 rounded-xl shadow-md transition-all disabled:opacity-60 cursor-pointer"
               >
                 {loadingPassword ? (
                   <>

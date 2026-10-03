@@ -50,14 +50,15 @@ export default function NavbarComponent({ onToggleSidebar }) {
         >
           <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-blue-100 font-semibold text-blue-600">
             {profile?.photo ? (
-              <img
-                src={profile.photo}
-                alt={profile?.name || "User"}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span>{profile?.name ? profile.name[0].toUpperCase() : "U"}</span>
-            )}
+            <img
+              src={profile.photo}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span>{profile?.name ? profile.name[0].toUpperCase() : "U"}</span>
+          )}
           </div>
           <span className="hidden text-sm font-medium text-slate-700 md:inline">
             {profile?.name || "Pengguna"}
