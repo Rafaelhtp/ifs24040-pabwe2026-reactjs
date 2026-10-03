@@ -166,7 +166,6 @@ function ProfilePage() {
           <label
             htmlFor="profile-photo-file-input"
             data-testid="upload-profile-photo-btn"
-            aria-label="Ubah Foto Profil"
             className="absolute bottom-0 right-0 p-2 rounded-full bg-blue-700 hover:bg-blue-800 text-white shadow-md cursor-pointer transition-transform hover:scale-105"
             title="Ubah Foto Profil"
           >

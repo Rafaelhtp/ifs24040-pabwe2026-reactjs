@@ -38,6 +38,14 @@ export default function SidebarComponent({ isOpen, onClose }) {
             <IconX size={20} />
           </button>
         </div>
+
+        <button
+          onClick={onClose}
+          aria-label="Tutup Menu Sidebar"
+          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+        >
+          <IconX size={20} />
+        </button>
         
         <button
           onClick={onClose}

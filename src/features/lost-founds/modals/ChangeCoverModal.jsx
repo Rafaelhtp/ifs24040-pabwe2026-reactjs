@@ -102,6 +102,13 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
               <IconUpload size={18} />
               {isLostFoundChangeCover ? "Mengunggah..." : "Unggah Sekarang"}
             </button>
+            <button
+              onClick={onClose}
+              aria-label="Tutup Dialog Ubah Cover"
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+            >
+              <IconX size={20} />
+            </button>
           </div>
         </form>
       </div>

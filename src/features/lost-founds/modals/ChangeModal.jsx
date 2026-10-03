@@ -149,6 +149,13 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
               <IconCheck size={18} />
               {isLostFoundChange ? "Menyimpan..." : "Perbarui Laporan"}
             </button>
+            <button
+              onClick={onClose}
+              aria-label="Tutup Dialog Edit Laporan"
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+            >
+              <IconX size={20} />
+            </button>
           </div>
         </form>
       </div>
