@@ -1,53 +1,18 @@
-import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
-import process from "process";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-  return {
-    plugins: [react(), tailwindcss()],
-    server: {
-      port: Number(env.APP_PORT) || 3000,
-    },
-    preview: {
-      port: Number(env.APP_PORT) || 3000,
-    },
-    define: {
-      DELCOM_BASEURL: JSON.stringify(
-        env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1"
-      ),
-    },
-    test: {
-      globals: true,
-      environment: "jsdom",
-      setupFiles: "./src/setupTests.js",
-      coverage: {
-        provider: "v8",
-        reporter: ["text", "json", "html", "lcov"],
-        include: ["src/**/*.{js,jsx,ts,tsx}"],
-        exclude: [
-          "src/main.jsx",
-          "src/setupTests.js",
-          "src/test-utils.jsx",
-          "**/*.test.{js,jsx}",
-          "node_modules/**",
-        ],
-      },
-    },
-    
-    plugins: [react()],
-    build: {
-      rollupOptions: {
-        output: {
-          // Memecah file Javascript agar ukurannya lebih kecil dan optimal
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              return 'vendor';
-            }
-          }
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        // Memecah file JS besar menjadi beberapa bagian kecil
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-redux': ['react-redux', '@reduxjs/toolkit'],
+          'vendor-icons': ['@tabler/icons-react']
         }
       }
     }
-  };
-});
+  }
+})
