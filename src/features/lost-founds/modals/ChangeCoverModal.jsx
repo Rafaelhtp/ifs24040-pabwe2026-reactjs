@@ -54,6 +54,7 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <h2 className="text-xl font-bold text-slate-800">Unggah Foto Cover</h2>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Tutup Dialog Unggah Foto Cover"
             className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
@@ -105,6 +106,7 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
               {isLostFoundChangeCover ? "Mengunggah..." : "Unggah Sekarang"}
             </button>
             <button
+              type="button"
               onClick={onClose}
               aria-label="Tutup Dialog Ubah Cover"
               className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"

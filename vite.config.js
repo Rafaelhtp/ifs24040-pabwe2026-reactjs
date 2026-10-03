@@ -35,5 +35,19 @@ export default defineConfig(({ mode }) => {
         ],
       },
     },
+    
+    plugins: [react()],
+    build: {
+      rollupOptions: {
+        output: {
+          // Memecah file Javascript agar ukurannya lebih kecil dan optimal
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          }
+        }
+      }
+    }
   };
 });

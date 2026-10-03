@@ -55,6 +55,7 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <h2 className="text-xl font-bold text-slate-800">Ubah Data Laporan</h2>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Tutup Dialog Edit Laporan"
             className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
@@ -152,6 +153,7 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
               {isLostFoundChange ? "Menyimpan..." : "Perbarui Laporan"}
             </button>
             <button
+              type="button"
               onClick={onClose}
               aria-label="Tutup Dialog Edit Laporan"
               className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"

@@ -32,30 +32,14 @@ export default function SidebarComponent({ isOpen, onClose }) {
         <div className="flex h-16 items-center justify-between border-b border-slate-100 px-6 lg:hidden">
           <span className="font-bold text-slate-800">Menu Navigasi</span>
           <button
+          type="button"
             onClick={onClose}
+            aria-label="Tutup Menu Sidebar"
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
           >
-            <IconX size={20} />
+            <IconX size={20} aria-hidden="true" />
           </button>
         </div>
-
-        <button
-          onClick={onClose}
-          aria-label="Tutup Menu Sidebar"
-          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-        >
-          <IconX size={20} />
-        </button>
-
-        <button
-          onClick={onClose}
-          aria-label="Tutup Menu Sidebar"
-          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-        >
-          <span className="sr-only">Tutup Menu Sidebar</span>
-          <IconX size={20} aria-hidden="true" />
-        </button>
-
         <nav className="flex-1 space-y-1.5 p-4">
           {menuItems.map((item) => {
             const Icon = item.icon;

@@ -42,6 +42,7 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
             Tambah Laporan Baru
           </h2>
           <button
+          type="button"
             onClick={onClose}
             aria-label="Tutup Dialog Tambah Laporan"
             className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
@@ -128,6 +129,7 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
             </button>
 
             <button
+              type="button"
               onClick={onClose}
               aria-label="Tutup Dialog Tambah Laporan"
               className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"

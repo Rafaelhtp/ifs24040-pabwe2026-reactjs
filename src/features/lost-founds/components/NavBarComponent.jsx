@@ -28,6 +28,7 @@ export default function NavbarComponent({ onToggleSidebar }) {
       {/* Brand & Mobile Hamburger */}
       <div className="flex items-center gap-3">
         <button
+          type="button"
           onClick={onToggleSidebar}
           className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
           aria-label="Toggle Menu"
