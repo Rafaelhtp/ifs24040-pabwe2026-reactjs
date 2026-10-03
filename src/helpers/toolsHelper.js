@@ -6,7 +6,7 @@ export function showErrorDialog(message) {
     text: message,
     icon: "error",
     confirmButtonText: "Tutup",
-    confirmButtonColor: "#ef4444",
+    confirmButtonColor: "#b91c1c",
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.close();

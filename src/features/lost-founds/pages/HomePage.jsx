@@ -189,7 +189,7 @@ export default function HomePage() {
       {/* Grid Kartu Laporan */}
       {isLostFound ? (
         <div className="flex h-64 items-center justify-center">
-          <p className="text-sm font-bold text-slate-700 animate-pulse">
+          <p className="text-sm font-bold text-slate-900">
             Memuat rincian laporan...
           </p>
         </div>

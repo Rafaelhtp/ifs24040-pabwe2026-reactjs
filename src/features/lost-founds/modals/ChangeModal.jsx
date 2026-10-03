@@ -154,7 +154,8 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
               aria-label="Tutup Dialog Edit Laporan"
               className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
             >
-              <IconX size={20} />
+              <span className="sr-only">Tutup Dialog Edit Laporan</span>
+              <IconX size={20} aria-hidden="true" />
             </button>
           </div>
         </form>

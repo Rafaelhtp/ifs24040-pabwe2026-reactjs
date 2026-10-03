@@ -53,12 +53,13 @@ export default function DetailPage() {
   if (isLostFound || !lostFound) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-sm font-semibold text-slate-800 animate-pulse">
+        <p className="text-sm font-bold text-slate-900">
           Memuat rincian laporan...
         </p>
       </div>
     );
   }
+
 
   // Cek apakah laporan milik akun yang sedang login
   const isOwner = profile?.id === lostFound.user_id;
