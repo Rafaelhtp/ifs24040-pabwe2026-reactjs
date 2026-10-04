@@ -22,20 +22,12 @@ function LoginPage() {
 
   // 1. BEGITU LOGIN BERHASIL (isAuthLogin === true), LANGSUNG PINDAH KE "/"
   useEffect(() => {
-    if (isAuthLogin === true) {
-      setLoading(false);
+    if (isAuthLogin) {
       dispatch(setIsAuthLoginActionCreator(false));
-      
-      const authToken = apiHelper.getAccessToken();
-      if (authToken) {
-        dispatch(asyncSetProfile());
-      }
-      
-      // Langsung pindahkan ke Dashboard agar bot grader membaca URL sudah di "/"
       navigate("/", { replace: true });
     }
   }, [isAuthLogin, dispatch, navigate]);
-
+  
   async function onSubmitHandler(event) {
     event.preventDefault();
     setLoading(true);
