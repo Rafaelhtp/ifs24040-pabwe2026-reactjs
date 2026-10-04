@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import {
   isAuthLoginReducer,
@@ -18,44 +18,48 @@ import {
   isChangeProfilePasswordReducer,
 } from "./features/users/states/reducer";
 import {
-  todosReducer,
-  todoReducer,
-  isTodoReducer,
-  isTodoAddReducer,
-  isTodoAddedReducer,
-  isTodoChangeReducer,
-  isTodoChangedReducer,
-  isTodoChangeCoverReducer,
-  isTodoChangedCoverReducer,
-  isTodoDeleteReducer,
-  isTodoDeletedReducer,
-} from "./features/todos/states/reducer";
+  lostFoundsReducer,
+  lostFoundReducer,
+  isLostFoundReducer,
+  isLostFoundAddReducer,
+  isLostFoundAddedReducer,
+  isLostFoundChangeReducer,
+  isLostFoundChangedReducer,
+  isLostFoundChangeCoverReducer,
+  isLostFoundChangedCoverReducer,
+  isLostFoundDeleteReducer,
+  isLostFoundDeletedReducer,
+  lostFoundStatsReducer,
+} from "./features/lost-founds/states/reducer";
+
+export const rootReducer = {
+  isAuthLogin: isAuthLoginReducer,
+  isAuthRegister: isAuthRegisterReducer,
+  isAuthLogout: isAuthLogoutReducer,
+  users: usersReducer,
+  user: userReducer,
+  profile: profileReducer,
+  isProfile: isProfileReducer,
+  isChangeProfile: isChangeProfileReducer,
+  isChangeProfilePhoto: isChangeProfilePhotoReducer,
+  isChangeProfilePassword: isChangeProfilePasswordReducer,
+  lostFounds: lostFoundsReducer,
+  lostFound: lostFoundReducer,
+  isLostFound: isLostFoundReducer,
+  isLostFoundAdd: isLostFoundAddReducer,
+  isLostFoundAdded: isLostFoundAddedReducer,
+  isLostFoundChange: isLostFoundChangeReducer,
+  isLostFoundChanged: isLostFoundChangedReducer,
+  isLostFoundChangeCover: isLostFoundChangeCoverReducer,
+  isLostFoundChangedCover: isLostFoundChangedCoverReducer,
+  isLostFoundDelete: isLostFoundDeleteReducer,
+  isLostFoundDeleted: isLostFoundDeletedReducer,
+  lostFoundStats: lostFoundStatsReducer,
+};
 
 export function createMockStore(preloadedState = {}) {
   return configureStore({
-    reducer: {
-      isAuthLogin: isAuthLoginReducer,
-      isAuthRegister: isAuthRegisterReducer,
-      isAuthLogout: isAuthLogoutReducer,
-      users: usersReducer,
-      user: userReducer,
-      profile: profileReducer,
-      isProfile: isProfileReducer,
-      isChangeProfile: isChangeProfileReducer,
-      isChangeProfilePhoto: isChangeProfilePhotoReducer,
-      isChangeProfilePassword: isChangeProfilePasswordReducer,
-      todos: todosReducer,
-      todo: todoReducer,
-      isTodo: isTodoReducer,
-      isTodoAdd: isTodoAddReducer,
-      isTodoAdded: isTodoAddedReducer,
-      isTodoChange: isTodoChangeReducer,
-      isTodoChanged: isTodoChangedReducer,
-      isTodoChangeCover: isTodoChangeCoverReducer,
-      isTodoChangedCover: isTodoChangedCoverReducer,
-      isTodoDelete: isTodoDeleteReducer,
-      isTodoDeleted: isTodoDeletedReducer,
-    },
+    reducer: rootReducer,
     preloadedState,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -70,13 +74,14 @@ export function renderWithProviders(
   {
     preloadedState = {},
     store = createMockStore(preloadedState),
+    route = "/",
     ...renderOptions
   } = {}
 ) {
   function Wrapper({ children }) {
     return (
       <Provider store={store}>
-        <BrowserRouter>{children}</BrowserRouter>
+        <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
       </Provider>
     );
   }

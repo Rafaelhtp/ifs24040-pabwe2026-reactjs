@@ -1,5 +1,8 @@
-import { putAccessToken, removeAccessToken } from "../../../helpers/apiHelper";
-import { showErrorDialog, showSuccessDialog } from "../../../helpers/toolsHelper";
+import apiHelper from "../../../helpers/apiHelper";
+import {
+  showErrorDialog,
+  showSuccessDialog,
+} from "../../../helpers/toolsHelper";
 import authApi from "../api/authApi";
 
 export const ActionType = {
@@ -8,27 +11,19 @@ export const ActionType = {
   SET_IS_AUTH_LOGOUT: "SET_IS_AUTH_LOGOUT",
 };
 
-// ===== Action creators =====
+// Login
 export function setIsAuthLoginActionCreator(isAuthLogin) {
-  return { type: ActionType.SET_IS_AUTH_LOGIN, payload: isAuthLogin };
+  return {
+    type: ActionType.SET_IS_AUTH_LOGIN,
+    payload: isAuthLogin,
+  };
 }
 
-export function setIsAuthRegisterActionCreator(isAuthRegister) {
-  return { type: ActionType.SET_IS_AUTH_REGISTER, payload: isAuthRegister };
-}
-
-export function setIsAuthLogoutActionCreator(isAuthLogout) {
-  return { type: ActionType.SET_IS_AUTH_LOGOUT, payload: isAuthLogout };
-}
-
-// ===== Async thunks =====
-// Semua thunk mengembalikan boolean agar halaman bisa langsung bereaksi.
 export function asyncSetIsAuthLogin(email, password) {
   return async (dispatch) => {
     try {
-      const token = await authApi.postLogin(email, password);
-      putAccessToken(token);
-      dispatch(setIsAuthLogoutActionCreator(false));
+      const data = await authApi.postLogin(email, password);
+      apiHelper.putAccessToken(data.token);
       dispatch(setIsAuthLoginActionCreator(true));
       return true;
     } catch (error) {
@@ -39,12 +34,20 @@ export function asyncSetIsAuthLogin(email, password) {
   };
 }
 
+// Register
+export function setIsAuthRegisterActionCreator(isAuthRegister) {
+  return {
+    type: ActionType.SET_IS_AUTH_REGISTER,
+    payload: isAuthRegister,
+  };
+}
+
 export function asyncSetIsAuthRegister(name, email, password) {
   return async (dispatch) => {
     try {
       const message = await authApi.postRegister(name, email, password);
       dispatch(setIsAuthRegisterActionCreator(true));
-      showSuccessDialog(message || "Pendaftaran berhasil, silakan masuk.");
+      showSuccessDialog(message);
       return true;
     } catch (error) {
       dispatch(setIsAuthRegisterActionCreator(false));
@@ -54,16 +57,26 @@ export function asyncSetIsAuthRegister(name, email, password) {
   };
 }
 
-export function asyncSetIsAuthLogout() {
+// Logout
+export function setIsAuthLogoutActionCreator(isAuthLogout) {
+  return {
+    type: ActionType.SET_IS_AUTH_LOGOUT,
+    payload: isAuthLogout,
+  };
+}
+
+export function asyncSetIsAuthLogout(callback) {
   return async (dispatch) => {
     try {
       await authApi.postLogout();
     } catch {
-      // Token lokal tetap dihapus walaupun server gagal merespons.
+      // Still proceed with clearing token locally even if server error
     } finally {
-      removeAccessToken();
-      dispatch(setIsAuthLoginActionCreator(false));
+      apiHelper.putAccessToken("");
       dispatch(setIsAuthLogoutActionCreator(true));
+      if (typeof callback === "function") {
+        callback();
+      }
     }
     return true;
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncCreateLostFound,
+  asyncAddLostFound,
   setIsLostFoundAddedActionCreator,
 } from "../states/action";
 import { IconX, IconPlus } from "@tabler/icons-react";
@@ -31,7 +31,7 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
-    dispatch(asyncCreateLostFound({ title, description, status }));
+    dispatch(asyncAddLostFound({ title, description, status }));
   };
 
   return (

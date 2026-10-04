@@ -1,80 +1,59 @@
-/* global DELCOM_BASEURL */
-// Pembungkus fetch ke REST API Delcom + utilitas token di localStorage.
+const TOKEN_KEY = "accessToken";
 
-const ACCESS_TOKEN_KEY = "accessToken";
-
-export function getAccessToken() {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
-}
-
-export function putAccessToken(token) {
-  if (token) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
+const apiHelper = (() => {
+  function getAccessToken() {
+    return localStorage.getItem(TOKEN_KEY);
   }
-}
 
-export function removeAccessToken() {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-}
-
-// Menyusun URL lengkap: BASEURL + path + query params (nilai kosong diabaikan).
-export function buildUrl(path, params = {}) {
-  const query = new URLSearchParams();
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      query.append(key, String(value));
+  function putAccessToken(token) {
+    if (!token) {
+      localStorage.removeItem(TOKEN_KEY);
+    } else {
+      localStorage.setItem(TOKEN_KEY, token);
     }
-  });
-  const queryString = query.toString();
-  return `${DELCOM_BASEURL}${path}${queryString ? `?${queryString}` : ""}`;
-}
-
-// Memanggil API. `body` berupa objek (dikirim sebagai JSON) atau FormData.
-// Mengembalikan JSON respons; melempar Error bila status HTTP / status API gagal.
-export async function fetchData(path, { method = "GET", body, params, headers = {} } = {}) {
-  const finalHeaders = { Accept: "application/json", ...headers };
-
-  const token = getAccessToken();
-  if (token) {
-    finalHeaders.Authorization = `Bearer ${token}`;
   }
 
-  let payload;
-  if (body instanceof FormData) {
-    payload = body;
-  } else if (body !== undefined) {
-    finalHeaders["Content-Type"] = "application/json";
-    payload = JSON.stringify(body);
+  function removeAccessToken() {
+    localStorage.removeItem(TOKEN_KEY);
   }
 
-  const response = await fetch(buildUrl(path, params), {
-    method,
-    headers: finalHeaders,
-    body: payload,
-  });
+  async function fetchData(url, options = {}) {
+    const urlParts = url.split("?");
+    let cleanUrl = urlParts[0];
+    const queryString = urlParts[1] ? `?${urlParts[1]}` : "";
 
-  let json = {};
-  try {
-    json = await response.json();
-  } catch {
-    json = {};
+    if (cleanUrl.endsWith("/")) {
+      cleanUrl = cleanUrl.slice(0, -1);
+    }
+
+    const fullUrl = cleanUrl + queryString;
+    const token = getAccessToken();
+
+    const headers = {
+      ...(options.headers || {}),
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    return fetch(fullUrl, {
+      ...options,
+      headers,
+    });
   }
 
-  if (!response.ok || json.status === "fail" || json.status === "error") {
-    throw new Error(json.message || `Permintaan gagal (${response.status})`);
-  }
+  return {
+    fetchData,
+    putAccessToken,
+    getAccessToken,
+    removeAccessToken,
+  };
+})();
 
-  return json;
-}
-
-const apiHelper = {
-  getAccessToken,
-  putAccessToken,
-  removeAccessToken,
-  buildUrl,
-  fetchData,
-};
+export const getAccessToken = apiHelper.getAccessToken;
+export const putAccessToken = apiHelper.putAccessToken;
+export const removeAccessToken = apiHelper.removeAccessToken;
+export const fetchData = apiHelper.fetchData;
 
 export default apiHelper;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncUploadCoverLostFound,
+  asyncChangeLostFoundCover,
   setIsLostFoundChangedCoverActionCreator,
 } from "../states/action";
 import { IconX, IconUpload, IconPhoto } from "@tabler/icons-react";
@@ -45,7 +45,7 @@ export default function ChangeCoverModal({ isOpen, onClose, itemId, onSuccess })
       showWarningDialog("Silakan pilih berkas gambar terlebih dahulu!");
       return;
     }
-    dispatch(asyncUploadCoverLostFound(itemId, selectedFile));
+    dispatch(asyncChangeLostFoundCover(itemId, selectedFile));
   };
 
   return (

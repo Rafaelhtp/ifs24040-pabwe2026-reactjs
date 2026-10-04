@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncGetLostFoundById,
+  asyncSetLostFoundById,
   asyncDeleteLostFound,
   setIsLostFoundDeletedActionCreator,
 } from "../states/action";
@@ -33,7 +33,7 @@ export default function DetailPage() {
 
   useEffect(() => {
     if (id) {
-      dispatch(asyncGetLostFoundById(id));
+      dispatch(asyncSetLostFoundById(id));
     }
   }, [id, dispatch]);
 
@@ -181,7 +181,7 @@ export default function DetailPage() {
         onClose={() => setIsEditOpen(false)}
         item={lostFound}
         onSuccess={() => {
-          dispatch(asyncGetLostFoundById(id));
+          dispatch(asyncSetLostFoundById(id));
         }}
       />
 
@@ -191,7 +191,7 @@ export default function DetailPage() {
         onClose={() => setIsCoverOpen(false)}
         itemId={id}
         onSuccess={() => {
-          dispatch(asyncGetLostFoundById(id));
+          dispatch(asyncSetLostFoundById(id));
         }}
       />
     </div>

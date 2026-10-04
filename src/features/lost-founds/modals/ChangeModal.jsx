@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncUpdateLostFound,
+  asyncChangeLostFound,
   setIsLostFoundChangedActionCreator,
 } from "../states/action";
 import { IconX, IconCheck } from "@tabler/icons-react";
@@ -40,7 +40,7 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
     if (!title.trim() || !description.trim()) return;
 
     dispatch(
-      asyncUpdateLostFound(item.id, {
+      asyncChangeLostFound(item.id, {
         title,
         description,
         status,

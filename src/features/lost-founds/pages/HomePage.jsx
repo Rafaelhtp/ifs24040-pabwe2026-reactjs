@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncGetLostFounds,
-  asyncGetLostFoundStats,
+  asyncSetLostFounds,
+  asyncSetLostFoundStats,
 } from "../states/action";
 import { formatDate } from "../../../helpers/toolsHelper";
 import AddModal from "../modals/AddModal";
@@ -29,13 +29,13 @@ export default function HomePage() {
 
   useEffect(() => {
     dispatch(
-      asyncGetLostFounds({
+      asyncSetLostFounds({
         status: filterStatus,
         is_completed: filterCompleted,
         is_me: filterMe,
       })
     );
-    dispatch(asyncGetLostFoundStats());
+    dispatch(asyncSetLostFoundStats());
   }, [dispatch, filterStatus, filterCompleted, filterMe]);
 
   const filteredList = lostFounds.filter((item) => {
@@ -269,7 +269,7 @@ export default function HomePage() {
         onClose={() => setIsAddOpen(false)}
         onSuccess={() => {
           dispatch(
-            asyncGetLostFounds({
+            asyncSetLostFounds({
               status: filterStatus,
               is_completed: filterCompleted,
               is_me: filterMe,
