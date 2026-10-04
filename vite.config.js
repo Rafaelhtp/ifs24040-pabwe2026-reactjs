@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import process from "node:process";
+import zlib from "node:zlib";
 
 const DEFAULT_BASEURL = "https://open-api.delcom.org/api/v1";
 
@@ -18,12 +19,43 @@ const nonBlockingCss = () => ({
   },
 });
 
+// Menghasilkan versi terkompresi .gz dan .br untuk seluruh file static
+const precompress = () => ({
+  name: "precompress",
+  apply: "build",
+  enforce: "post",
+  generateBundle(_, bundle) {
+    for (const [name, chunk] of Object.entries(bundle)) {
+      if (
+        name.endsWith(".js") ||
+        name.endsWith(".css") ||
+        name.endsWith(".html") ||
+        name.endsWith(".svg")
+      ) {
+        const content = chunk.type === "asset" ? chunk.source : chunk.code;
+        if (!content) continue;
+        const buffer = Buffer.from(content);
+        this.emitFile({
+          type: "asset",
+          fileName: `${name}.gz`,
+          source: zlib.gzipSync(buffer, { level: 9 }),
+        });
+        this.emitFile({
+          type: "asset",
+          fileName: `${name}.br`,
+          source: zlib.brotliCompressSync(buffer),
+        });
+      }
+    }
+  },
+});
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const port = Number(env.APP_PORT) || 3000;
 
   return {
-    plugins: [react(), tailwindcss(), nonBlockingCss()],
+    plugins: [react(), tailwindcss(), nonBlockingCss(), precompress()],
     server: { port },
     preview: { port },
     define: {
@@ -31,6 +63,26 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: "esnext",
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react-dom") || id.includes("/react/")) {
+                return "vendor-react";
+              }
+              if (id.includes("react-router-dom") || id.includes("@remix-run")) {
+                return "vendor-router";
+              }
+              if (id.includes("@reduxjs") || id.includes("react-redux")) {
+                return "vendor-redux";
+              }
+              if (id.includes("@tabler")) {
+                return "vendor-icons";
+              }
+            }
+          },
+        },
+      },
     },
     test: {
       globals: true,
