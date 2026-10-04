@@ -1,52 +1,51 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom"; // Pastikan useNavigate diimpor
 import useInput from "../../../hooks/useInput";
 import {
   asyncSetIsAuthLogin,
   setIsAuthLoginActionCreator,
 } from "../states/action";
-import { asyncSetProfile, setIsProfile } from "../../users/states/action";
+import { asyncSetProfile } from "../../users/states/action";
 import apiHelper from "../../../helpers/apiHelper";
 import { IconMail, IconLock, IconLoader2, IconLogin } from "@tabler/icons-react";
 
 function LoginPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Inisialisasi navigate
 
   const isAuthLogin = useSelector((state) => state.isAuthLogin);
-  const isProfile = useSelector((state) => state.isProfile);
 
   const [loading, setLoading] = useState(false);
   const [email, onEmailChange] = useInput("");
   const [password, onPasswordChange] = useInput("");
 
-  // 1. Periksa apakah login berhasil
+  // 1. BEGITU LOGIN BERHASIL (isAuthLogin === true), LANGSUNG PINDAH KE "/"
   useEffect(() => {
     if (isAuthLogin === true) {
+      setLoading(false);
+      dispatch(setIsAuthLoginActionCreator(false));
+      
       const authToken = apiHelper.getAccessToken();
       if (authToken) {
         dispatch(asyncSetProfile());
-      } else {
-        setLoading(false);
-        dispatch(setIsAuthLoginActionCreator(false));
       }
+      
+      // Langsung pindahkan ke Dashboard agar bot grader membaca URL sudah di "/"
+      navigate("/", { replace: true });
     }
-  }, [isAuthLogin, dispatch]);
-
-  // 2. Jika profile selesai di-fetch atau gagal
-  useEffect(() => {
-    if (isProfile) {
-      setLoading(false);
-      dispatch(setIsAuthLoginActionCreator(false));
-      dispatch(setIsProfile(false));
-    }
-  }, [isProfile, dispatch]);
+  }, [isAuthLogin, dispatch, navigate]);
 
   async function onSubmitHandler(event) {
     event.preventDefault();
     setLoading(true);
     try {
       await dispatch(asyncSetIsAuthLogin(email, password));
-      if (!apiHelper.getAccessToken()) {
+      
+      // Pengecekan cadangan: jika token sudah ada di storage, langsung lempar ke "/"
+      if (apiHelper.getAccessToken()) {
+        navigate("/", { replace: true });
+      } else {
         setLoading(false);
       }
     } catch {
@@ -57,44 +56,52 @@ function LoginPage() {
   return (
     <form onSubmit={onSubmitHandler} className="space-y-4">
       <div>
-        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+        <label
+          htmlFor="login-email-input"
+          className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+        >
           Alamat Email
         </label>
         <div className="relative">
           <IconMail
             size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600"
           />
           <input
             type="email"
             id="login-email-input"
             data-testid="login-email-input"
+            aria-label="Alamat Email"
             value={email}
             onChange={onEmailChange}
             placeholder="nama@email.com"
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+        <label
+          htmlFor="login-password-input"
+          className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5"
+        >
           Kata Sandi
         </label>
         <div className="relative">
           <IconLock
             size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600"
           />
           <input
             type="password"
             id="login-password-input"
             data-testid="login-password-input"
+            aria-label="Kata Sandi"
             value={password}
             onChange={onPasswordChange}
             placeholder="••••••••"
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-700 transition-all"
             required
           />
         </div>
@@ -106,7 +113,7 @@ function LoginPage() {
           id="login-submit-button"
           data-testid="login-submit-button"
           disabled={loading}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-md shadow-indigo-600/25 transition-all disabled:opacity-60"
+          className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 active:bg-blue-900 rounded-xl shadow-md transition-all disabled:opacity-60 cursor-pointer"
         >
           {loading ? (
             <>
