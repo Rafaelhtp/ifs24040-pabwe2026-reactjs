@@ -5,44 +5,41 @@ import process from "node:process";
 
 const DEFAULT_BASEURL = "https://open-api.delcom.org/api/v1";
 
-// https://vite.dev/config/
+// Menyisipkan CSS hasil build ke <style> di index.html sehingga tidak ada
+// request CSS yang memblokir render (Render blocking requests).
+const inlineCss = () => ({
+  name: "inline-css",
+  apply: "build",
+  enforce: "post",
+  generateBundle(_, bundle) {
+    const html = bundle["index.html"];
+    if (!html) return;
+    let source = String(html.source);
+    for (const [name, chunk] of Object.entries(bundle)) {
+      if (!name.endsWith(".css")) continue;
+      const tag = new RegExp(`<link[^>]*href="[^"]*${name.split("/").pop()}"[^>]*>`);
+      if (tag.test(source)) {
+        source = source.replace(tag, () => `<style>${chunk.source}</style>`);
+        delete bundle[name];
+      }
+    }
+    html.source = source;
+  },
+});
+
 export default defineConfig(({ mode }) => {
-  // Prefix "" => semua variabel di .env ikut dimuat (APP_PORT, DELCOM_BASEURL)
   const env = loadEnv(mode, process.cwd(), "");
   const port = Number(env.APP_PORT) || 3000;
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), inlineCss()],
     server: { port },
     preview: { port },
     define: {
-      // Konstanta global yang dipakai di src/helpers/apiHelper.js
       DELCOM_BASEURL: JSON.stringify(env.DELCOM_BASEURL || DEFAULT_BASEURL),
     },
     build: {
       target: "esnext",
-      cssCodeSplit: true,
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes("node_modules")) {
-              if (
-                id.includes("react-router-dom") ||
-                id.includes("react-dom") ||
-                id.includes("/react/")
-              ) {
-                return "vendor-react";
-              }
-              if (id.includes("@reduxjs") || id.includes("react-redux")) {
-                return "vendor-redux";
-              }
-              if (id.includes("@tabler") || id.includes("sweetalert2")) {
-                return "vendor-ui";
-              }
-            }
-          },
-        },
-      },
     },
     test: {
       globals: true,

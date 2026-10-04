@@ -6,7 +6,9 @@ export function showErrorDialog(message) {
     text: message,
     icon: "error",
     confirmButtonText: "Tutup",
-    confirmButtonColor: "#b91c1c",
+    confirmButtonColor: "#991b1b",
+    color: "#0f172a",
+    background: "#ffffff",
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.close();
@@ -21,7 +23,9 @@ export function showWarningDialog(message) {
     text: message,
     icon: "warning",
     confirmButtonText: "Tutup",
-    confirmButtonColor: "#f59e0b",
+    confirmButtonColor: "#b45309",
+    color: "#0f172a",
+    background: "#ffffff",
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.close();
@@ -36,7 +40,9 @@ export function showSuccessDialog(message) {
     text: message,
     icon: "success",
     confirmButtonText: "Tutup",
-    confirmButtonColor: "#10b981",
+    confirmButtonColor: "#047857",
+    color: "#0f172a",
+    background: "#ffffff",
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.close();
@@ -53,8 +59,10 @@ export function showConfirmDialog(message) {
     showCancelButton: true,
     confirmButtonText: "Ya",
     cancelButtonText: "Tidak",
-    confirmButtonColor: "#6366f1",
-    cancelButtonColor: "#94a3b8",
+    confirmButtonColor: "#1d4ed8",
+    cancelButtonColor: "#334155",
+    color: "#0f172a",
+    background: "#ffffff",
   });
 }
 
