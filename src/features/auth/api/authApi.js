@@ -2,7 +2,7 @@ import apiHelper from "../../../helpers/apiHelper";
 
 const authApi = (() => {
   // PENTING: Harus menyertakan /auth
-  const BASE_URL = `${DELCOM_BASEURL}/auth`;
+  const BASE_URL = import.meta.env.VITE_DELCOM_BASEURL;
 
   function _url(path) {
     return BASE_URL + path;
