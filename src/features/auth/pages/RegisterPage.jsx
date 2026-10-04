@@ -61,6 +61,9 @@ export default function RegisterPage() {
             type="text"
             id="register-name-input"
             data-testid="register-name-input"
+            name="name"
+            aria-label="Nama Lengkap"
+            autoComplete="name"
             value={name}
             onChange={onChangeName}
             placeholder="Nama Lengkap Anda"
@@ -86,6 +89,9 @@ export default function RegisterPage() {
             type="email"
             id="register-email-input"
             data-testid="register-email-input"
+            name="email"
+            aria-label="Alamat Email"
+            autoComplete="email"
             value={email}
             onChange={onChangeEmail}
             placeholder="nama@email.com"
@@ -111,6 +117,9 @@ export default function RegisterPage() {
             type="password"
             id="register-password-input"
             data-testid="register-password-input"
+            name="password"
+            aria-label="Kata Sandi"
+            autoComplete="new-password"
             value={password}
             onChange={onChangePassword}
             placeholder="Minimal 6 karakter"

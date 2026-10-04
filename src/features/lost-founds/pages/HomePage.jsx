@@ -68,7 +68,7 @@ export default function HomePage() {
       </div>
 
       {/* Ringkasan Metrik Statistik (Warna disesuaikan agar kontras > 4.5:1) */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div id="statistik" tabIndex="-1" className="grid grid-cols-2 gap-4 lg:grid-cols-4 outline-none">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-700">
             Total Laporan

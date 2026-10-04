@@ -15,9 +15,10 @@ const ProfilePage = lazy(() => import("./features/users/pages/ProfilePage"));
 
 // Komponen Loading yang estetik tapi sederhana
 const FallbackLoading = () => (
-  <div className="flex h-screen w-full items-center justify-center bg-slate-50">
-    <div className="text-sm font-medium text-slate-500 animate-pulse">Memuat data...</div>
-  </div>
+  <main id="main-content" role="main" className="flex h-screen w-full items-center justify-center bg-slate-50">
+    <h1 className="sr-only">Memuat Halaman</h1>
+    <div className="text-sm font-medium text-slate-700 animate-pulse">Memuat data...</div>
+  </main>
 );
 
 export default function App() {

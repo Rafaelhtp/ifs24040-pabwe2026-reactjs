@@ -73,6 +73,9 @@ export default function LoginPage() {
             type="email"
             id="login-email-input"
             data-testid="login-email-input"
+            name="email"
+            aria-label="Alamat Email"
+            autoComplete="email"
             value={email}
             onChange={onEmailChange}
             placeholder="nama@email.com"
@@ -98,6 +101,9 @@ export default function LoginPage() {
             type="password"
             id="login-password-input"
             data-testid="login-password-input"
+            name="password"
+            aria-label="Kata Sandi"
+            autoComplete="current-password"
             value={password}
             onChange={onPasswordChange}
             placeholder="••••••••"

@@ -68,7 +68,7 @@ export default function UsersPage() {
               className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-slate-200 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
             />
           </div>
-          <span className="text-xs font-semibold text-slate-500 px-3 py-1 bg-slate-100 rounded-lg">
+          <span className="text-xs font-semibold text-slate-800 px-3 py-1 bg-slate-200 rounded-lg">
             Total: {filteredUsers.length} Pengguna
           </span>
         </div>
@@ -76,14 +76,14 @@ export default function UsersPage() {
         {/* User Grid */}
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {loadingUsers && filteredUsers.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-slate-400">
+            <div className="col-span-full py-16 text-center text-slate-500">
               <IconLoader2 size={36} className="mx-auto text-blue-600 animate-spin mb-2" />
-              <p className="font-medium text-slate-600">Memuat daftar pengguna...</p>
+              <p className="font-medium text-slate-700">Memuat daftar pengguna...</p>
             </div>
           ) : filteredUsers.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-slate-400">
-              <IconUsers size={40} className="mx-auto text-slate-300 mb-2" />
-              <p className="font-medium">Tidak ada data pengguna ditemukan.</p>
+            <div className="col-span-full py-12 text-center text-slate-500">
+              <IconUsers size={40} className="mx-auto text-slate-400 mb-2" />
+              <p className="font-medium text-slate-700">Tidak ada data pengguna ditemukan.</p>
             </div>
           ) : (
             filteredUsers.map((u) => (
@@ -106,18 +106,18 @@ export default function UsersPage() {
                   )}
 
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-slate-900 truncate">{u.name || "Anonim"}</h3>
-                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5 truncate">
-                      <IconMail size={14} className="shrink-0 text-slate-400" />
+                    <h2 className="font-bold text-slate-900 truncate text-base">{u.name || "Anonim"}</h2>
+                    <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5 truncate font-medium">
+                      <IconMail size={14} className="shrink-0 text-slate-600" />
                       <span className="truncate">{u.email || "-"}</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                  <span className="font-mono font-semibold">ID: #{u.id}</span>
-                  <span className="flex items-center gap-1">
-                    <IconCalendar size={13} />
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-700 font-medium">
+                  <span className="font-mono font-semibold text-slate-700">ID: #{u.id}</span>
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <IconCalendar size={13} className="text-slate-600" />
                     {u.created_at ? formatDate(u.created_at) : "-"}
                   </span>
                 </div>
