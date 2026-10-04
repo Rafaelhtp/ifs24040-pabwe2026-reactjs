@@ -1,6 +1,14 @@
-import Swal from "sweetalert2";
+let _swal = null;
+async function getSwal() {
+  if (!_swal) {
+    const mod = await import("sweetalert2");
+    _swal = mod.default || mod;
+  }
+  return _swal;
+}
 
-export function showErrorDialog(message) {
+export async function showErrorDialog(message) {
+  const Swal = await getSwal();
   return Swal.fire({
     title: "Terjadi Kesalahan",
     text: message,
@@ -17,7 +25,8 @@ export function showErrorDialog(message) {
   });
 }
 
-export function showWarningDialog(message) {
+export async function showWarningDialog(message) {
+  const Swal = await getSwal();
   return Swal.fire({
     title: "Peringatan",
     text: message,
@@ -34,7 +43,8 @@ export function showWarningDialog(message) {
   });
 }
 
-export function showSuccessDialog(message) {
+export async function showSuccessDialog(message) {
+  const Swal = await getSwal();
   return Swal.fire({
     title: "Tindakan Berhasil",
     text: message,
@@ -51,8 +61,9 @@ export function showSuccessDialog(message) {
   });
 }
 
-export function showConfirmDialog(message) {
-  return Swal.fire({
+export async function showConfirmDialog(message, onConfirmed) {
+  const Swal = await getSwal();
+  const result = await Swal.fire({
     title: "Konfirmasi",
     text: message,
     icon: "question",
@@ -64,6 +75,10 @@ export function showConfirmDialog(message) {
     color: "#0f172a",
     background: "#ffffff",
   });
+  if (result.isConfirmed && typeof onConfirmed === "function") {
+    onConfirmed();
+  }
+  return result;
 }
 
 export function formatDate(date) {

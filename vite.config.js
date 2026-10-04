@@ -5,25 +5,16 @@ import process from "node:process";
 
 const DEFAULT_BASEURL = "https://open-api.delcom.org/api/v1";
 
-// Menyisipkan CSS hasil build ke <style> di index.html sehingga tidak ada
-// request CSS yang memblokir render (Render blocking requests).
-const inlineCss = () => ({
-  name: "inline-css",
+// Mengubah link CSS menjadi non-render-blocking dengan rel="preload" & media="print" onload="this.media='all'"
+const nonBlockingCss = () => ({
+  name: "non-blocking-css",
   apply: "build",
   enforce: "post",
-  generateBundle(_, bundle) {
-    const html = bundle["index.html"];
-    if (!html) return;
-    let source = String(html.source);
-    for (const [name, chunk] of Object.entries(bundle)) {
-      if (!name.endsWith(".css")) continue;
-      const tag = new RegExp(`<link[^>]*href="[^"]*${name.split("/").pop()}"[^>]*>`);
-      if (tag.test(source)) {
-        source = source.replace(tag, () => `<style>${chunk.source}</style>`);
-        delete bundle[name];
-      }
-    }
-    html.source = source;
+  transformIndexHtml(html) {
+    return html.replace(
+      /<link rel="stylesheet" crossorigin href="(\/assets\/[^"]+\.css)">/g,
+      '<link rel="preload" as="style" href="$1"><link rel="stylesheet" href="$1" media="print" onload="this.media=\'all\'"><noscript><link rel="stylesheet" href="$1"></noscript>'
+    );
   },
 });
 
@@ -32,7 +23,7 @@ export default defineConfig(({ mode }) => {
   const port = Number(env.APP_PORT) || 3000;
 
   return {
-    plugins: [react(), tailwindcss(), inlineCss()],
+    plugins: [react(), tailwindcss(), nonBlockingCss()],
     server: { port },
     preview: { port },
     define: {
