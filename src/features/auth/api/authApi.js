@@ -1,13 +1,15 @@
 import apiHelper from "../../../helpers/apiHelper";
 
 const authApi = (() => {
-  const BASE_URL = import.meta.env.VITE_DELCOM_BASEURL;
+  // PENTING: Harus menyertakan /auth
+  const BASE_URL = `${DELCOM_BASEURL}/auth`;
 
   function _url(path) {
     return BASE_URL + path;
   }
 
   async function postRegister(name, email, password) {
+    // Memanggil: https://open-api.delcom.org/api/v1/auth/register
     const response = await apiHelper.fetchData(_url("/register"), {
       method: "POST",
       headers: {
@@ -34,6 +36,7 @@ const authApi = (() => {
   }
 
   async function postLogin(email, password) {
+    // Memanggil: https://open-api.delcom.org/api/v1/auth/login
     const response = await apiHelper.fetchData(_url("/login"), {
       method: "POST",
       headers: {
@@ -54,6 +57,7 @@ const authApi = (() => {
   }
 
   async function postLogout() {
+    // Memanggil: https://open-api.delcom.org/api/v1/auth/logout
     const response = await apiHelper.fetchData(_url("/logout"), {
       method: "POST",
       headers: {
