@@ -1,135 +1,125 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import useInput from "../../../hooks/useInput";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  asyncSetIsAuthRegister,
-  setIsAuthRegisterActionCreator,
-} from "../states/action";
-import { IconUser, IconMail, IconLock, IconLoader2, IconUserPlus } from "@tabler/icons-react";
+  IconUser,
+  IconMail,
+  IconLock,
+  IconLockCheck,
+  IconLoader2,
+  IconUserPlus,
+} from "@tabler/icons-react";
+import useInput from "../../../hooks/useInput";
+import TextField from "../../../components/TextField";
+import { asyncSetIsAuthRegister } from "../states/action";
 
-function RegisterPage() {
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function validateRegister({ name, email, password, confirmPassword }) {
+  const errors = {};
+  if (!name.trim()) errors.name = "Nama wajib diisi.";
+  else if (name.trim().length < 3) errors.name = "Nama minimal 3 karakter.";
+  if (!email.trim()) errors.email = "Email wajib diisi.";
+  else if (!EMAIL_PATTERN.test(email.trim())) errors.email = "Format email tidak valid.";
+  if (!password) errors.password = "Kata sandi wajib diisi.";
+  else if (password.length < 6) errors.password = "Kata sandi minimal 6 karakter.";
+  if (confirmPassword !== password) errors.confirmPassword = "Konfirmasi kata sandi tidak sama.";
+  return errors;
+}
+
+export default function RegisterPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isAuthRegister = useSelector((state) => state.isAuthRegister);
-
+  const [name, onNameChange] = useInput("");
+  const [email, onEmailChange] = useInput("");
+  const [password, onPasswordChange] = useInput("");
+  const [confirmPassword, onConfirmPasswordChange] = useInput("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [name, onChangeName, setName] = useInput("");
-  const [email, onChangeEmail, setEmail] = useInput("");
-  const [password, onChangePassword, setPassword] = useInput("");
-
-  // 1. Periksa apakah register telah selesai diproses
-  useEffect(() => {
-    if (isAuthRegister === true) {
-      setLoading(false);
-      dispatch(setIsAuthRegisterActionCreator(false));
-      setName("");
-      setEmail("");
-      setPassword("");
-      navigate("/auth/login");
-    } else if (isAuthRegister === false) {
-      setLoading(false);
-    }
-  }, [isAuthRegister, dispatch, setName, setEmail, setPassword, navigate]);
 
   async function onSubmitHandler(event) {
     event.preventDefault();
+    const validation = validateRegister({ name, email, password, confirmPassword });
+    setErrors(validation);
+    if (Object.keys(validation).length > 0) return;
+
     setLoading(true);
-    try {
-      await dispatch(asyncSetIsAuthRegister(name, email, password));
-    } finally {
-      setLoading(false);
-    }
+    const success = await dispatch(asyncSetIsAuthRegister(name.trim(), email.trim(), password));
+    setLoading(false);
+    if (success) navigate("/auth/login");
   }
 
   return (
-    <form onSubmit={onSubmitHandler} className="space-y-4">
-      <div>
-        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-          Nama Lengkap
-        </label>
-        <div className="relative">
-          <IconUser
-            size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            type="text"
-            data-testid="register-name-input"
-            value={name}
-            onChange={onChangeName}
-            placeholder="Nama Lengkap Anda"
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
-            required
-          />
-        </div>
-      </div>
+    <form onSubmit={onSubmitHandler} noValidate className="space-y-4" aria-label="Form registrasi">
+      <TextField
+        id="register-name"
+        label="Nama Lengkap"
+        icon={IconUser}
+        value={name}
+        onChange={onNameChange}
+        placeholder="Nama lengkap Anda"
+        autoComplete="name"
+        error={errors.name}
+      />
+      <TextField
+        id="register-email"
+        label="Alamat Email"
+        type="email"
+        icon={IconMail}
+        value={email}
+        onChange={onEmailChange}
+        placeholder="nama@email.com"
+        autoComplete="email"
+        error={errors.email}
+      />
+      <TextField
+        id="register-password"
+        label="Kata Sandi"
+        type="password"
+        icon={IconLock}
+        value={password}
+        onChange={onPasswordChange}
+        placeholder="Minimal 6 karakter"
+        autoComplete="new-password"
+        error={errors.password}
+      />
+      <TextField
+        id="register-confirm-password"
+        label="Konfirmasi Kata Sandi"
+        type="password"
+        icon={IconLockCheck}
+        value={confirmPassword}
+        onChange={onConfirmPasswordChange}
+        placeholder="Ulangi kata sandi"
+        autoComplete="new-password"
+        error={errors.confirmPassword}
+      />
 
-      <div>
-        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-          Alamat Email
-        </label>
-        <div className="relative">
-          <IconMail
-            size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            type="email"
-            data-testid="register-email-input"
-            value={email}
-            onChange={onChangeEmail}
-            placeholder="nama@email.com"
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
-            required
-          />
-        </div>
-      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-blue-800 disabled:opacity-60"
+      >
+        {loading ? (
+          <>
+            <IconLoader2 size={18} className="animate-spin" aria-hidden="true" />
+            <span>Mendaftarkan akun...</span>
+          </>
+        ) : (
+          <>
+            <IconUserPlus size={18} aria-hidden="true" />
+            <span>Daftar Akun</span>
+          </>
+        )}
+      </button>
 
-      <div>
-        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-          Kata Sandi
-        </label>
-        <div className="relative">
-          <IconLock
-            size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            type="password"
-            data-testid="register-password-input"
-            value={password}
-            onChange={onChangePassword}
-            placeholder="Minimal 6 karakter"
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="pt-2">
-        <button
-          type="submit"
-          data-testid="register-submit-button"
-          disabled={loading}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-md shadow-indigo-600/25 transition-all disabled:opacity-60"
-        >
-          {loading ? (
-            <>
-              <IconLoader2 size={18} className="animate-spin" />
-              <span>Mendaftarkan Akun...</span>
-            </>
-          ) : (
-            <>
-              <IconUserPlus size={18} stroke={2.5} />
-              <span>Daftar Akun</span>
-            </>
-          )}
-        </button>
-      </div>
+      <p className="text-center text-sm text-slate-600">
+        Sudah punya akun?{" "}
+        <Link to="/auth/login" className="font-semibold text-blue-700 hover:underline">
+          Masuk di sini
+        </Link>
+      </p>
     </form>
   );
 }
-
-export default RegisterPage;

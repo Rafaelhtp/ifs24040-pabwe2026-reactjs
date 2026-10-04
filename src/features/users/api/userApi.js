@@ -1,116 +1,60 @@
-import apiHelper from "../../../helpers/apiHelper";
+import { fetchData } from "../../../helpers/apiHelper";
 
-const userApi = (() => {
-  const BASE_URL = import.meta.env.VITE_DELCOM_BASEURL;
+// GET /users
+export async function getUsers() {
+  const json = await fetchData("/users");
+  return json.data.users;
+}
 
-  function _url(path) {
-    return BASE_URL + path;
-  }
+// GET /users/:id
+export async function getUserById(id) {
+  const json = await fetchData(`/users/${id}`);
+  return json.data.user;
+}
 
-  async function getUsers() {
-    const response = await apiHelper.fetchData(_url("/"), {
-      method: "GET",
-    });
+// GET /users/me
+export async function getProfile() {
+  const json = await fetchData("/users/me");
+  return json.data.user;
+}
 
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengambil data pengguna");
-    }
+// PUT /users/me
+export async function putProfile(name, email) {
+  const json = await fetchData("/users/me", { method: "PUT", body: { name, email } });
+  return json.data?.user ?? null;
+}
 
-    return result.data?.users || [];
-  }
+// POST /users/me/photo (multipart/form-data)
+export async function postProfilePhoto(photo) {
+  const formData = new FormData();
+  formData.append("photo", photo);
+  const json = await fetchData("/users/me/photo", { method: "POST", body: formData });
+  return json.message;
+}
 
-  async function getUserById(userId) {
-    const response = await apiHelper.fetchData(_url(`/${userId}`), {
-      method: "GET",
-    });
+// Ganti kata sandi. Modul menyebut PUT /users/me/password, namun server Delcom
+// saat ini hanya melayani PUT /users/password (lihat dokumentasi api-users).
+export const CHANGE_PASSWORD_PATH = "/users/password";
 
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengambil detail pengguna");
-    }
+export async function putProfilePassword(password, newPassword, newPasswordConfirmation) {
+  const json = await fetchData(CHANGE_PASSWORD_PATH, {
+    method: "PUT",
+    body: {
+      password,
+      new_password: newPassword,
+      new_password_confirmation: newPasswordConfirmation,
+    },
+  });
+  return json.message;
+}
 
-    return result.data?.user;
-  }
-
-  async function getProfile() {
-    const response = await apiHelper.fetchData(_url("/me"), {
-      method: "GET",
-    });
-
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengambil data profil");
-    }
-
-    return result.data?.user;
-  }
-
-  async function putProfile(name, email) {
-    const response = await apiHelper.fetchData(_url("/me"), {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-      }),
-    });
-
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengubah profil");
-    }
-
-    return result.data?.user;
-  }
-
-  async function postProfilePhoto(photo) {
-    const formData = new FormData();
-    formData.append("photo", photo, photo.name || "profile.png");
-    const response = await apiHelper.fetchData(_url("/me/photo"), {
-      method: "PUT",
-      body: formData,
-    });
-
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengubah foto profil");
-    }
-
-    return result.message;
-  }
-
-  async function putProfilePassword(password, newPassword, newPasswordConfirmation) {
-    const response = await apiHelper.fetchData(_url("/password"), {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password,
-        new_password: newPassword,
-        new_password_confirmation: newPasswordConfirmation || newPassword,
-      }),
-    });
-
-    const result = await response.json();
-    if (result.status !== "success" && !result.success) {
-      throw new Error(result.message || "Gagal mengubah kata sandi");
-    }
-
-    return result.message;
-  }
-
-  return {
-    getUsers,
-    getUserById,
-    getProfile,
-    putProfile,
-    postProfilePhoto,
-    putProfilePassword,
-  };
-})();
+const userApi = {
+  getUsers,
+  getUserById,
+  getProfile,
+  putProfile,
+  postProfilePhoto,
+  putProfilePassword,
+};
 
 export default userApi;

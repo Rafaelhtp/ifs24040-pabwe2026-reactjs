@@ -1,109 +1,52 @@
 import { ActionType } from "./action";
 
-export const lostFoundsReducer = (state = [], action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_LOST_FOUNDS:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+// Membuat reducer sederhana: mengganti state dengan payload untuk action type tertentu.
+function createValueReducer(type, initialState) {
+  return function valueReducer(state = initialState, action = {}) {
+    switch (action.type) {
+      case type:
+        return action.payload;
+      default:
+        return state;
+    }
+  };
+}
 
-export const lostFoundReducer = (state = null, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_LOST_FOUND:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const lostFoundsReducer = createValueReducer(ActionType.SET_LOST_FOUNDS, []);
+export const lostFoundReducer = createValueReducer(ActionType.SET_LOST_FOUND, null);
+export const isLostFoundReducer = createValueReducer(ActionType.SET_IS_LOST_FOUND, false);
 
-export const isLostFoundReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const isLostFoundAddReducer = createValueReducer(ActionType.SET_IS_LOST_FOUND_ADD, false);
+export const isLostFoundAddedReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_ADDED,
+  false
+);
 
-export const isLostFoundAddReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_ADD:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const isLostFoundChangeReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_CHANGE,
+  false
+);
+export const isLostFoundChangedReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_CHANGED,
+  false
+);
 
-export const isLostFoundAddedReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_ADDED:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const isLostFoundChangeCoverReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_CHANGE_COVER,
+  false
+);
+export const isLostFoundChangedCoverReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_CHANGED_COVER,
+  false
+);
 
-export const isLostFoundChangeReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_CHANGE:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const isLostFoundDeleteReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_DELETE,
+  false
+);
+export const isLostFoundDeletedReducer = createValueReducer(
+  ActionType.SET_IS_LOST_FOUND_DELETED,
+  false
+);
 
-export const isLostFoundChangedReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_CHANGED:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const isLostFoundChangeCoverReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_CHANGE_COVER:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const isLostFoundChangedCoverReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_CHANGED_COVER:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const isLostFoundDeleteReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_DELETE:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const isLostFoundDeletedReducer = (state = false, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_IS_LOST_FOUND_DELETED:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const lostFoundStatsReducer = (state = { daily: null, monthly: null }, action = {}) => {
-  switch (action.type) {
-    case ActionType.SET_LOST_FOUND_STATS:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const lostFoundStatsReducer = createValueReducer(ActionType.SET_LOST_FOUND_STATS, null);

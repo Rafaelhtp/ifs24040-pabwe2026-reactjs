@@ -1,5 +1,5 @@
-import { lostFoundApi } from "../api/lostFoundApi";
 import { showErrorDialog, showSuccessDialog } from "../../../helpers/toolsHelper";
+import lostFoundApi from "../api/lostFoundApi";
 
 export const ActionType = {
   SET_LOST_FOUNDS: "SET_LOST_FOUNDS",
@@ -16,197 +16,131 @@ export const ActionType = {
   SET_LOST_FOUND_STATS: "SET_LOST_FOUND_STATS",
 };
 
-export const setLostFoundsActionCreator = (lostFounds) => ({
-  type: ActionType.SET_LOST_FOUNDS,
-  payload: lostFounds,
-});
+const createAction = (type) => (payload) => ({ type, payload });
 
-export const setLostFoundActionCreator = (lostFound) => ({
-  type: ActionType.SET_LOST_FOUND,
-  payload: lostFound,
-});
+// ===== Action creators =====
+export const setLostFoundsActionCreator = createAction(ActionType.SET_LOST_FOUNDS);
+export const setLostFoundActionCreator = createAction(ActionType.SET_LOST_FOUND);
+export const setIsLostFoundActionCreator = createAction(ActionType.SET_IS_LOST_FOUND);
+export const setIsLostFoundAddActionCreator = createAction(ActionType.SET_IS_LOST_FOUND_ADD);
+export const setIsLostFoundAddedActionCreator = createAction(ActionType.SET_IS_LOST_FOUND_ADDED);
+export const setIsLostFoundChangeActionCreator = createAction(ActionType.SET_IS_LOST_FOUND_CHANGE);
+export const setIsLostFoundChangedActionCreator = createAction(
+  ActionType.SET_IS_LOST_FOUND_CHANGED
+);
+export const setIsLostFoundChangeCoverActionCreator = createAction(
+  ActionType.SET_IS_LOST_FOUND_CHANGE_COVER
+);
+export const setIsLostFoundChangedCoverActionCreator = createAction(
+  ActionType.SET_IS_LOST_FOUND_CHANGED_COVER
+);
+export const setIsLostFoundDeleteActionCreator = createAction(ActionType.SET_IS_LOST_FOUND_DELETE);
+export const setIsLostFoundDeletedActionCreator = createAction(
+  ActionType.SET_IS_LOST_FOUND_DELETED
+);
+export const setLostFoundStatsActionCreator = createAction(ActionType.SET_LOST_FOUND_STATS);
 
-export const setIsLostFoundActionCreator = (isLostFound) => ({
-  type: ActionType.SET_IS_LOST_FOUND,
-  payload: isLostFound,
-});
-
-export const setIsLostFoundAddActionCreator = (isLostFoundAdd) => ({
-  type: ActionType.SET_IS_LOST_FOUND_ADD,
-  payload: isLostFoundAdd,
-});
-
-export const setIsLostFoundAddedActionCreator = (isLostFoundAdded) => ({
-  type: ActionType.SET_IS_LOST_FOUND_ADDED,
-  payload: isLostFoundAdded,
-});
-
-export const setIsLostFoundChangeActionCreator = (isLostFoundChange) => ({
-  type: ActionType.SET_IS_LOST_FOUND_CHANGE,
-  payload: isLostFoundChange,
-});
-
-export const setIsLostFoundChangedActionCreator = (isLostFoundChanged) => ({
-  type: ActionType.SET_IS_LOST_FOUND_CHANGED,
-  payload: isLostFoundChanged,
-});
-
-export const setIsLostFoundChangeCoverActionCreator = (isLostFoundChangeCover) => ({
-  type: ActionType.SET_IS_LOST_FOUND_CHANGE_COVER,
-  payload: isLostFoundChangeCover,
-});
-
-export const setIsLostFoundChangedCoverActionCreator = (isLostFoundChangedCover) => ({
-  type: ActionType.SET_IS_LOST_FOUND_CHANGED_COVER,
-  payload: isLostFoundChangedCover,
-});
-
-export const setIsLostFoundDeleteActionCreator = (isLostFoundDelete) => ({
-  type: ActionType.SET_IS_LOST_FOUND_DELETE,
-  payload: isLostFoundDelete,
-});
-
-export const setIsLostFoundDeletedActionCreator = (isLostFoundDeleted) => ({
-  type: ActionType.SET_IS_LOST_FOUND_DELETED,
-  payload: isLostFoundDeleted,
-});
-
-export const setLostFoundStatsActionCreator = (lostFoundStats) => ({
-  type: ActionType.SET_LOST_FOUND_STATS,
-  payload: lostFoundStats,
-});
-
-// --- Async Thunks ---
-
-export const asyncGetLostFounds = (filters = {}) => {
+// ===== Async thunks =====
+export function asyncSetLostFounds(filters = {}) {
   return async (dispatch) => {
-    dispatch(setIsLostFoundActionCreator(true));
     try {
-      const response = await lostFoundApi.getLostFounds(filters);
-      if (response && (response.success || response.status === "success" || Array.isArray(response.data?.lost_founds))) {
-        dispatch(setLostFoundsActionCreator(response.data?.lost_founds || []));
-      } else {
-        showErrorDialog(response.message || "Gagal memuat data lost & found");
-      }
+      const lostFounds = await lostFoundApi.getLostFounds(filters);
+      dispatch(setLostFoundsActionCreator(lostFounds));
+      return true;
     } catch (error) {
+      dispatch(setLostFoundsActionCreator([]));
       showErrorDialog(error.message);
-    } finally {
-      dispatch(setIsLostFoundActionCreator(false));
+      return false;
     }
   };
-};
+}
 
-export const asyncGetLostFoundById = (id) => {
+// isLostFound = true menandakan proses pengambilan detail sudah selesai.
+export function asyncSetLostFound(id) {
   return async (dispatch) => {
-    dispatch(setIsLostFoundActionCreator(true));
+    dispatch(setIsLostFoundActionCreator(false));
+    dispatch(setLostFoundActionCreator(null));
     try {
-      const response = await lostFoundApi.getLostFoundById(id);
-      if (response && (response.success || response.status === "success" || response.data?.lost_found)) {
-        dispatch(setLostFoundActionCreator(response.data.lost_found));
-      } else {
-        showErrorDialog(response.message || "Gagal memuat rincian laporan");
-      }
+      const lostFound = await lostFoundApi.getLostFoundById(id);
+      dispatch(setLostFoundActionCreator(lostFound));
+      return true;
     } catch (error) {
       showErrorDialog(error.message);
+      return false;
     } finally {
-      dispatch(setIsLostFoundActionCreator(false));
+      dispatch(setIsLostFoundActionCreator(true));
     }
   };
-};
+}
 
-export const asyncCreateLostFound = ({ title, description, status }) => {
-  return async (dispatch) => {
-    dispatch(setIsLostFoundAddActionCreator(true));
-    try {
-      const response = await lostFoundApi.createLostFound({ title, description, status });
-      if (response && (response.success || response.status === "success")) {
-        showSuccessDialog("Laporan berhasil ditambahkan!");
-        dispatch(setIsLostFoundAddedActionCreator(true));
-      } else {
-        showErrorDialog(response.message || "Gagal menambahkan laporan");
-      }
-    } catch (error) {
-      showErrorDialog(error.message);
-    } finally {
-      dispatch(setIsLostFoundAddActionCreator(false));
-    }
-  };
-};
-
-export const asyncUpdateLostFound = (id, data) => {
-  return async (dispatch) => {
-    dispatch(setIsLostFoundChangeActionCreator(true));
-    try {
-      const response = await lostFoundApi.updateLostFound(id, data);
-      if (response && (response.success || response.status === "success")) {
-        showSuccessDialog("Laporan berhasil diperbarui!");
-        dispatch(setIsLostFoundChangedActionCreator(true));
-        dispatch(setLostFoundActionCreator(response.data.lost_found));
-      } else {
-        showErrorDialog(response.message || "Gagal memperbarui laporan");
-      }
-    } catch (error) {
-      showErrorDialog(error.message);
-    } finally {
-      dispatch(setIsLostFoundChangeActionCreator(false));
-    }
-  };
-};
-
-export const asyncUploadCoverLostFound = (id, file) => {
-  return async (dispatch) => {
-    dispatch(setIsLostFoundChangeCoverActionCreator(true));
-    try {
-      const response = await lostFoundApi.uploadCover(id, file);
-      if (response && (response.success || response.status === "success")) {
-        showSuccessDialog("Cover laporan berhasil diubah!");
-        dispatch(setIsLostFoundChangedCoverActionCreator(true));
-        dispatch(setLostFoundActionCreator(response.data.lost_found));
-      } else {
-        showErrorDialog(response.message || "Gagal mengunggah cover");
-      }
-    } catch (error) {
-      showErrorDialog(error.message);
-    } finally {
-      dispatch(setIsLostFoundChangeCoverActionCreator(false));
-    }
-  };
-};
-
-export const asyncDeleteLostFound = (id) => {
-  return async (dispatch) => {
-    dispatch(setIsLostFoundDeleteActionCreator(true));
-    try {
-      const response = await lostFoundApi.deleteLostFound(id);
-      if (response && (response.success || response.status === "success")) {
-        showSuccessDialog("Laporan berhasil dihapus!");
-        dispatch(setIsLostFoundDeletedActionCreator(true));
-      } else {
-        showErrorDialog(response.message || "Gagal menghapus laporan");
-      }
-    } catch (error) {
-      showErrorDialog(error.message);
-    } finally {
-      dispatch(setIsLostFoundDeleteActionCreator(false));
-    }
-  };
-};
-
-export const asyncGetLostFoundStats = () => {
+export function asyncSetLostFoundStats() {
   return async (dispatch) => {
     try {
-      const [dailyRes, monthlyRes] = await Promise.all([
-        lostFoundApi.getDailyStats(),
-        lostFoundApi.getMonthlyStats(),
+      const [daily, monthly] = await Promise.all([
+        lostFoundApi.getStatsDaily(),
+        lostFoundApi.getStatsMonthly(),
       ]);
-      dispatch(
-        setLostFoundStatsActionCreator({
-          daily: dailyRes?.data || null,
-          monthly: monthlyRes?.data || null,
-        })
-      );
+      dispatch(setLostFoundStatsActionCreator({ daily, monthly }));
+      return true;
     } catch (error) {
-      console.error("Gagal memuat statistik", error);
+      dispatch(setLostFoundStatsActionCreator(null));
+      showErrorDialog(error.message);
+      return false;
     }
   };
-};
+}
+
+// Pola mutasi: reset flag "selesai", nyalakan flag "proses", panggil API, beri umpan balik.
+function runMutation({ processCreator, doneCreator, request, successMessage }) {
+  return async (dispatch) => {
+    dispatch(doneCreator(false));
+    dispatch(processCreator(true));
+    try {
+      const result = await request();
+      dispatch(doneCreator(true));
+      showSuccessDialog(successMessage);
+      return result ?? true;
+    } catch (error) {
+      showErrorDialog(error.message);
+      return false;
+    } finally {
+      dispatch(processCreator(false));
+    }
+  };
+}
+
+export function asyncAddLostFound({ title, description, status }) {
+  return runMutation({
+    processCreator: setIsLostFoundAddActionCreator,
+    doneCreator: setIsLostFoundAddedActionCreator,
+    request: () => lostFoundApi.postLostFound({ title, description, status }),
+    successMessage: "Laporan berhasil ditambahkan.",
+  });
+}
+
+export function asyncChangeLostFound(id, { title, description, status, is_completed }) {
+  return runMutation({
+    processCreator: setIsLostFoundChangeActionCreator,
+    doneCreator: setIsLostFoundChangedActionCreator,
+    request: () => lostFoundApi.putLostFound(id, { title, description, status, is_completed }),
+    successMessage: "Laporan berhasil diperbarui.",
+  });
+}
+
+export function asyncChangeLostFoundCover(id, cover) {
+  return runMutation({
+    processCreator: setIsLostFoundChangeCoverActionCreator,
+    doneCreator: setIsLostFoundChangedCoverActionCreator,
+    request: () => lostFoundApi.postLostFoundCover(id, cover),
+    successMessage: "Foto cover berhasil diperbarui.",
+  });
+}
+
+export function asyncDeleteLostFound(id) {
+  return runMutation({
+    processCreator: setIsLostFoundDeleteActionCreator,
+    doneCreator: setIsLostFoundDeletedActionCreator,
+    request: () => lostFoundApi.deleteLostFound(id),
+    successMessage: "Laporan berhasil dihapus.",
+  });
+}

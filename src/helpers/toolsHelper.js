@@ -1,4 +1,15 @@
+/* global DELCOM_BASEURL */
 import Swal from "sweetalert2";
+
+export function showSuccessDialog(message) {
+  return Swal.fire({
+    title: "Berhasil",
+    text: message,
+    icon: "success",
+    confirmButtonText: "Oke",
+    confirmButtonColor: "#1d4ed8",
+  });
+}
 
 export function showErrorDialog(message) {
   return Swal.fire({
@@ -7,64 +18,42 @@ export function showErrorDialog(message) {
     icon: "error",
     confirmButtonText: "Tutup",
     confirmButtonColor: "#b91c1c",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-    }
-    return result;
   });
 }
 
-export function showWarningDialog(message) {
-  return Swal.fire({
-    title: "Peringatan",
-    text: message,
-    icon: "warning",
-    confirmButtonText: "Tutup",
-    confirmButtonColor: "#f59e0b",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-    }
-    return result;
-  });
-}
-
-export function showSuccessDialog(message) {
-  return Swal.fire({
-    title: "Tindakan Berhasil",
-    text: message,
-    icon: "success",
-    confirmButtonText: "Tutup",
-    confirmButtonColor: "#10b981",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-    }
-    return result;
-  });
-}
-
-export function showConfirmDialog(message) {
-  return Swal.fire({
+// Mengembalikan Promise<boolean>: true jika pengguna menekan tombol konfirmasi.
+export async function showConfirmDialog(message, confirmText = "Ya, lanjutkan") {
+  const result = await Swal.fire({
     title: "Konfirmasi",
     text: message,
-    icon: "question",
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Ya",
-    cancelButtonText: "Tidak",
-    confirmButtonColor: "#6366f1",
-    cancelButtonColor: "#94a3b8",
+    confirmButtonText: confirmText,
+    cancelButtonText: "Batal",
+    confirmButtonColor: "#b91c1c",
+    cancelButtonColor: "#64748b",
+    reverseButtons: true,
   });
+  return Boolean(result?.isConfirmed);
 }
 
-export function formatDate(date) {
+export function formatDate(date, withTime = true) {
   if (!date) return "-";
-  return new Date(date).toLocaleString("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return "-";
+
+  const options = { day: "2-digit", month: "long", year: "numeric" };
+  if (withTime) {
+    options.hour = "2-digit";
+    options.minute = "2-digit";
+  }
+  return parsed.toLocaleString("id-ID", options);
+}
+
+// API mengembalikan path relatif (mis. "img/lost-founds/cover/1.png") atau URL penuh.
+export function getImageUrl(path) {
+  if (!path) return null;
+  if (/^(https?:|blob:|data:)/.test(path)) return path;
+  const origin = new URL(DELCOM_BASEURL).origin;
+  return `${origin}/${String(path).replace(/^\/+/, "")}`;
 }

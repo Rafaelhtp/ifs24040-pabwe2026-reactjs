@@ -1,64 +1,70 @@
 import { ActionType } from "./action";
+import { ActionType as AuthActionType } from "../../auth/states/action";
 
-export const usersReducer = (state = [], action = {}) => {
+// Saat logout, data sesi pengguna dikosongkan.
+const isLogout = (action) => action.type === AuthActionType.SET_IS_AUTH_LOGOUT && action.payload;
+
+export function usersReducer(state = [], action = {}) {
   switch (action.type) {
     case ActionType.SET_USERS:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const userReducer = (state = null, action = {}) => {
+export function userReducer(state = null, action = {}) {
   switch (action.type) {
     case ActionType.SET_USER:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const profileReducer = (state = null, action = {}) => {
+export function profileReducer(state = null, action = {}) {
+  if (isLogout(action)) return null;
   switch (action.type) {
     case ActionType.SET_PROFILE:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const isProfileReducer = (state = false, action = {}) => {
+export function isProfileReducer(state = false, action = {}) {
+  if (isLogout(action)) return false;
   switch (action.type) {
     case ActionType.SET_IS_PROFILE:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const isChangeProfileReducer = (state = false, action = {}) => {
+export function isChangeProfileReducer(state = false, action = {}) {
   switch (action.type) {
     case ActionType.SET_IS_CHANGE_PROFILE:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const isChangeProfilePhotoReducer = (state = false, action = {}) => {
+export function isChangeProfilePhotoReducer(state = false, action = {}) {
   switch (action.type) {
     case ActionType.SET_IS_CHANGE_PROFILE_PHOTO:
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const isChangeProfilePasswordReducer = (state = false, action = {}) => {
+export function isChangeProfilePasswordReducer(state = false, action = {}) {
   switch (action.type) {
     case ActionType.SET_IS_CHANGE_PROFILE_PASSWORD:
       return action.payload;
     default:
       return state;
   }
-};
+}

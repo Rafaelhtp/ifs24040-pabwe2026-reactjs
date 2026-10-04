@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { IconMenu2, IconUser, IconLogout, IconChevronDown } from "@tabler/icons-react";
 import { asyncSetIsAuthLogout } from "../../auth/states/action";
-import {
-  IconMenu2,
-  IconUser,
-  IconLogout,
-  IconChevronDown,
-} from "@tabler/icons-react";
+import { showConfirmDialog } from "../../../helpers/toolsHelper";
+import Avatar from "../../../components/Avatar";
 
 export default function NavbarComponent({ onToggleSidebar }) {
   const navigate = useNavigate();
@@ -15,81 +12,90 @@ export default function NavbarComponent({ onToggleSidebar }) {
   const profile = useSelector((state) => state.profile);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(
-      asyncSetIsAuthLogout(() => {
-        navigate("/auth/login");
-      })
-    );
-  };
+  async function onLogout() {
+    setDropdownOpen(false);
+    const confirmed = await showConfirmDialog("Anda yakin ingin keluar dari aplikasi?", "Keluar");
+    if (!confirmed) return;
+    await dispatch(asyncSetIsAuthLogout());
+    navigate("/auth/login", { replace: true });
+  }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/80 px-4 backdrop-blur-md lg:px-8">
-      {/* Brand & Mobile Hamburger */}
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur-md lg:px-8">
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
-          aria-label="Toggle Menu"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+          aria-label="Buka menu navigasi"
         >
-          <IconMenu2 size={22} />
+          <IconMenu2 size={22} aria-hidden="true" />
         </button>
         <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Delcom Logo" className="h-8 w-8" />
+          <img src="/logo.svg" alt="Logo Delcom Lost & Founds" className="h-8 w-8" />
           <span className="text-lg font-bold tracking-tight text-slate-800">
-            Delcom <span className="text-blue-600">Lost & Founds</span>
+            Delcom <span className="text-blue-700">Lost &amp; Founds</span>
           </span>
         </Link>
       </div>
 
-      {/* User Session & Dropdown */}
-      <div className="relative">
-        <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="flex items-center gap-2.5 rounded-full border border-slate-200 py-1.5 pl-2 pr-3 transition-colors hover:bg-slate-50"
+      <div className="relative flex items-center gap-3">
+        <span
+          className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex"
+          title="Status sesi"
         >
-          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-blue-100 font-semibold text-blue-600">
-            {profile?.photo ? (
-            <img
-              src={profile.photo}
-              alt=""
-              aria-hidden="true"
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <span>{profile?.name ? profile.name[0].toUpperCase() : "U"}</span>
-          )}
-          </div>
+          <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+          Sesi aktif
+        </span>
+
+        <button
+          type="button"
+          onClick={() => setDropdownOpen((open) => !open)}
+          aria-haspopup="menu"
+          aria-expanded={dropdownOpen}
+          aria-label="Menu profil"
+          className="flex items-center gap-2.5 rounded-full border border-slate-200 py-1.5 pl-1.5 pr-3 transition-colors hover:bg-slate-50"
+        >
+          <Avatar name={profile?.name} photo={profile?.photo} size="sm" />
           <span className="hidden text-sm font-medium text-slate-700 md:inline">
-            {profile?.name || "Pengguna"}
+            {profile?.name ?? "Pengguna"}
           </span>
-          <IconChevronDown size={16} className="text-slate-400" />
+          <IconChevronDown size={16} className="text-slate-500" aria-hidden="true" />
         </button>
 
         {dropdownOpen && (
           <>
             <div
+              data-testid="dropdown-backdrop"
               className="fixed inset-0 z-40"
               onClick={() => setDropdownOpen(false)}
             />
-            <div className="absolute right-0 z-50 mt-2 w-48 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl">
+            <div
+              role="menu"
+              className="absolute right-0 top-12 z-50 w-56 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl"
+            >
+              <div className="border-b border-slate-100 px-3 pb-2 pt-1">
+                <p className="truncate text-sm font-semibold text-slate-900">
+                  {profile?.name ?? "Pengguna"}
+                </p>
+                <p className="truncate text-xs text-slate-500">{profile?.email ?? "-"}</p>
+              </div>
               <Link
                 to="/profile"
+                role="menuitem"
                 onClick={() => setDropdownOpen(false)}
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                className="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
-                <IconUser size={18} />
+                <IconUser size={18} aria-hidden="true" />
                 Profil Saya
               </Link>
               <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  handleLogout();
-                }}
+                type="button"
+                role="menuitem"
+                onClick={onLogout}
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50"
               >
-                <IconLogout size={18} />
+                <IconLogout size={18} aria-hidden="true" />
                 Keluar
               </button>
             </div>

@@ -1,83 +1,72 @@
-import apiHelper from "../../../helpers/apiHelper";
+import { fetchData } from "../../../helpers/apiHelper";
 
-const BASE_URL = import.meta.env.VITE_DELCOM_BASEURL;
+const BASE_PATH = "/lost-founds";
 
-export const lostFoundApi = {
-  // 1. Mengambil daftar barang hilang & temuan (dengan filter)
-  async getLostFounds({ status = "", is_completed = "", is_me = "" } = {}) {
-    const params = new URLSearchParams();
-    if (status) params.append("status", status);
-    if (is_completed !== "" && is_completed !== undefined) {
-      params.append("is_completed", is_completed);
-    }
-    if (is_me !== "" && is_me !== undefined) {
-      params.append("is_me", is_me);
-    }
+// GET /lost-founds?status=lost|found&is_completed=1|0&is_me=1
+export async function getLostFounds({ status, is_completed, is_me } = {}) {
+  const json = await fetchData(BASE_PATH, { params: { status, is_completed, is_me } });
+  return json.data.lost_founds;
+}
 
-    const queryString = params.toString() ? `?${params.toString()}` : "";
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds${queryString}`);
-    return response.json();
-  },
+// GET /lost-founds/:id
+export async function getLostFoundById(id) {
+  const json = await fetchData(`${BASE_PATH}/${id}`);
+  return json.data.lost_found;
+}
 
-  // 2. Mengambil detail laporan berdasarkan ID
-  async getLostFoundById(id) {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/${id}`);
-    return response.json();
-  },
+// POST /lost-founds -> mengembalikan id laporan baru
+export async function postLostFound({ title, description, status }) {
+  const json = await fetchData(BASE_PATH, {
+    method: "POST",
+    body: { title, description, status },
+  });
+  return json.data.lost_found_id;
+}
 
-  // 3. Menambahkan laporan baru
-  async createLostFound({ title, description, status }) {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, description, status }),
-    });
-    return response.json();
-  },
+// PUT /lost-founds/:id
+export async function putLostFound(id, { title, description, status, is_completed }) {
+  const json = await fetchData(`${BASE_PATH}/${id}`, {
+    method: "PUT",
+    body: { title, description, status, is_completed: is_completed ? 1 : 0 },
+  });
+  return json.message;
+}
 
-  // 4. Mengubah data laporan dan status selesai
-  async updateLostFound(id, { title, description, status, is_completed }) {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, description, status, is_completed }),
-    });
-    return response.json();
-  },
+// POST /lost-founds/:id/cover (multipart/form-data)
+export async function postLostFoundCover(id, cover) {
+  const formData = new FormData();
+  formData.append("cover", cover);
+  const json = await fetchData(`${BASE_PATH}/${id}/cover`, { method: "POST", body: formData });
+  return json.message;
+}
 
-  // 5. Mengunggah gambar cover (FormData - token otomatis terpasang)
-  async uploadCover(id, file) {
-    const formData = new FormData();
-    formData.append("cover", file);
+// DELETE /lost-founds/:id
+export async function deleteLostFound(id) {
+  const json = await fetchData(`${BASE_PATH}/${id}`, { method: "DELETE" });
+  return json.message;
+}
 
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/${id}/cover`, {
-      method: "POST",
-      body: formData,
-    });
-    return response.json();
-  },
+// GET /lost-founds/stats/daily
+export async function getStatsDaily(params = {}) {
+  const json = await fetchData(`${BASE_PATH}/stats/daily`, { params });
+  return json.data;
+}
 
-  // 6. Menghapus laporan barang
-  async deleteLostFound(id) {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/${id}`, {
-      method: "DELETE",
-    });
-    return response.json();
-  },
+// GET /lost-founds/stats/monthly
+export async function getStatsMonthly(params = {}) {
+  const json = await fetchData(`${BASE_PATH}/stats/monthly`, { params });
+  return json.data;
+}
 
-  // 7. Mengambil statistik harian
-  async getDailyStats() {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/stats/daily`);
-    return response.json();
-  },
-
-  // 8. Mengambil statistik bulanan
-  async getMonthlyStats() {
-    const response = await apiHelper.fetchData(`${BASE_URL}/lost-founds/stats/monthly`);
-    return response.json();
-  },
+const lostFoundApi = {
+  getLostFounds,
+  getLostFoundById,
+  postLostFound,
+  putLostFound,
+  postLostFoundCover,
+  deleteLostFound,
+  getStatsDaily,
+  getStatsMonthly,
 };
+
+export default lostFoundApi;
