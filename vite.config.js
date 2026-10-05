@@ -64,7 +64,6 @@ export default defineConfig(({ mode }) => {
     build: {
       target: "esnext",
       cssCodeSplit: true, // Memaksa pemecahan CSS agar lebih ringan saat di-load
-      minify: "esbuild", // Memastikan proses minifikasi yang sangat efisien
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
