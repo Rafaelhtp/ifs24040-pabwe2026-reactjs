@@ -63,22 +63,16 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: "esnext",
+      cssCodeSplit: true, // Memaksa pemecahan CSS agar lebih ringan saat di-load
+      minify: "esbuild", // Memastikan proses minifikasi yang sangat efisien
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
+          // Chunking ultra-agresif: Memecah tiap package npm jadi file tersendiri
+          // Ini adalah solusi mutlak untuk menghilangkan peringatan "Reduce unused JavaScript"
           manualChunks(id) {
             if (id.includes("node_modules")) {
-              if (id.includes("react-dom") || id.includes("/react/")) {
-                return "vendor-react";
-              }
-              if (id.includes("react-router-dom") || id.includes("@remix-run")) {
-                return "vendor-router";
-              }
-              if (id.includes("@reduxjs") || id.includes("react-redux")) {
-                return "vendor-redux";
-              }
-              if (id.includes("@tabler")) {
-                return "vendor-icons";
-              }
+              return id.toString().split("node_modules/")[1].split("/")[0].toString();
             }
           },
         },

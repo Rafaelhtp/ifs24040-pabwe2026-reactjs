@@ -22,30 +22,26 @@ const FallbackLoading = () => (
 
 export default function App() {
   return (
-    <Routes>
-      {/* Auth Routes (Sinkron untuk Autograder) */}
-      <Route path="/auth" element={<AuthLayout />}>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-      </Route>
+    /* Suspense diletakkan membungkus Routes agar transisi antar halaman lazy lebih stabil */
+    <Suspense fallback={<FallbackLoading />}>
+      <Routes>
+        {/* Auth Routes (Sinkron untuk Autograder) */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+        </Route>
 
-      {/* Protected Routes (Di-lazy load dengan Suspense) */}
-      <Route
-        path="/"
-        element={
-          <Suspense fallback={<FallbackLoading />}>
-            <LostFoundLayout />
-          </Suspense>
-        }
-      >
-        <Route index element={<HomePage />} />
-        <Route path="lost-founds/:id" element={<DetailPage />} />
-        <Route path="users" element={<UsersPage />} />
-        <Route path="profile" element={<ProfilePage />} />
-      </Route>
+        {/* Protected Routes (Di-lazy load) */}
+        <Route path="/" element={<LostFoundLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="lost-founds/:id" element={<DetailPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
 
-      {/* Wildcard Route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Wildcard Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
