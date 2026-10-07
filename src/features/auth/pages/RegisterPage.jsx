@@ -34,10 +34,11 @@ export default function RegisterPage() {
   }, [isAuthRegister, dispatch, setName, setEmail, setPassword, navigate]);
 
   async function onSubmitHandler(event) {
-    event.preventDefault();
-    setLoading(true);
-    try {
-      await dispatch(asyncSetIsAuthRegister(name, email, password));
+  event.preventDefault();
+  setLoading(true);
+  try {
+    // Append .unwrap() to extract the Promise
+    await dispatch(asyncSetIsAuthRegister(name, email, password)).unwrap();
     } finally {
       setLoading(false);
     }
