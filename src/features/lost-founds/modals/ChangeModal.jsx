@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   asyncChangeLostFound,
@@ -167,3 +168,16 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
     </div>
   );
 }
+
+ChangeModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  item: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    description: PropTypes.string,
+    status: PropTypes.string,
+    is_completed: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  }),
+  onSuccess: PropTypes.func,
+};

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 // Input berlabel yang dipakai ulang di form auth, profil, dan modal.
 export default function TextField({
@@ -47,3 +48,12 @@ export default function TextField({
     </div>
   );
 }
+
+TextField.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.elementType,
+  error: PropTypes.string,
+  multiline: PropTypes.bool,
+  className: PropTypes.string,
+};

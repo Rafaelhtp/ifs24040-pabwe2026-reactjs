@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   asyncAddLostFound,
@@ -143,3 +144,9 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
     </div>
   );
 }
+
+AddModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
+};

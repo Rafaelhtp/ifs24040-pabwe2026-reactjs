@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { IconMenu2, IconUser, IconLogout, IconChevronDown } from "@tabler/icons-react";
@@ -108,3 +109,7 @@ export default function NavbarComponent({ onToggleSidebar }) {
     </header>
   );
 }
+
+NavbarComponent.propTypes = {
+  onToggleSidebar: PropTypes.func,
+};

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   IconReportSearch,
@@ -87,3 +88,8 @@ export default function SidebarComponent({ isOpen = false, onClose = () => {} })
     </>
   );
 }
+
+SidebarComponent.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+};

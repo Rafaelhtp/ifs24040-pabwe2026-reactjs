@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { getImageUrl } from "../helpers/toolsHelper";
 
 const SIZES = {
@@ -32,3 +33,9 @@ export default function Avatar({ name, photo, size = "sm" }) {
     </span>
   );
 }
+
+Avatar.propTypes = {
+  name: PropTypes.string,
+  photo: PropTypes.string,
+  size: PropTypes.oneOf(["sm", "md", "lg"]),
+};
