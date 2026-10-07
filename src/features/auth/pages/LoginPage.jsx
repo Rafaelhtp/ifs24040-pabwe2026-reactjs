@@ -46,7 +46,7 @@ export default function LoginPage() {
     event.preventDefault();
     setLoading(true);
     try {
-      await dispatch(asyncSetIsAuthLogin(email, password));
+      await Promise.resolve(dispatch(asyncSetIsAuthLogin(email, password)));
       if (!apiHelper.getAccessToken()) {
         setLoading(false);
       }

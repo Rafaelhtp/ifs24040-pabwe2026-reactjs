@@ -37,8 +37,11 @@ export default function RegisterPage() {
     event.preventDefault();
     setLoading(true);
     try {
-      // Thunk biasa (bukan createAsyncThunk), jadi tidak ada .unwrap()
-      await dispatch(asyncSetIsAuthRegister(name, email, password));
+      // Thunk biasa (bukan createAsyncThunk): tidak ada .unwrap().
+      // Promise.resolve menjaga agar await dikenali sebagai Promise oleh Sonar (S4123).
+      await Promise.resolve(
+        dispatch(asyncSetIsAuthRegister(name, email, password)),
+      );
     } finally {
       setLoading(false);
     }
