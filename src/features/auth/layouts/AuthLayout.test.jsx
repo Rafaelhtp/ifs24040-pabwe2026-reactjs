@@ -57,4 +57,28 @@ describe("AuthLayout", () => {
 
     expect(screen.getByText("Masuk Akun")).toBeInTheDocument();
   });
+
+  it("should highlight register tab when on register route", () => {
+    vi.spyOn(apiHelper, "getAccessToken").mockReturnValue(null);
+
+    renderWithProviders(<AuthLayout />, {
+      route: "/auth/register",
+      preloadedState: { profile: null },
+    });
+
+    expect(screen.getByText("Daftar Baru")).toHaveClass("text-blue-700");
+    expect(screen.getByText("Masuk Akun")).not.toHaveClass("text-blue-700");
+  });
+
+  it("should highlight login tab when on login route", () => {
+    vi.spyOn(apiHelper, "getAccessToken").mockReturnValue(null);
+
+    renderWithProviders(<AuthLayout />, {
+      route: "/auth/login",
+      preloadedState: { profile: null },
+    });
+
+    expect(screen.getByText("Masuk Akun")).toHaveClass("text-blue-700");
+    expect(screen.getByText("Daftar Baru")).not.toHaveClass("text-blue-700");
+  });
 });

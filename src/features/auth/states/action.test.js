@@ -81,6 +81,26 @@ describe("auth action", () => {
   });
 
   describe("asyncSetIsAuthLogout", () => {
+    it("should run callback after logout when callback is a function", async () => {
+      const dispatch = vi.fn();
+      const callback = vi.fn();
+      vi.spyOn(authApi, "postLogout").mockResolvedValue("ok");
+      vi.spyOn(apiHelper, "putAccessToken").mockImplementation(() => {});
+
+      const result = await asyncSetIsAuthLogout(callback)(dispatch);
+
+      expect(result).toBe(true);
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    it("should ignore callback that is not a function", async () => {
+      const dispatch = vi.fn();
+      vi.spyOn(authApi, "postLogout").mockResolvedValue("ok");
+      vi.spyOn(apiHelper, "putAccessToken").mockImplementation(() => {});
+
+      await expect(asyncSetIsAuthLogout("bukan-function")(dispatch)).resolves.toBe(true);
+    });
+
     it("should clear token and dispatch logout action when logout succeeds", async () => {
       const dispatch = vi.fn();
       vi.spyOn(authApi, "postLogout").mockResolvedValue("Berhasil logout");

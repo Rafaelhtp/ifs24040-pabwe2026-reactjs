@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import apiHelper from "./apiHelper";
+import apiHelper, {
+  getAccessToken,
+  putAccessToken,
+  removeAccessToken,
+  fetchData,
+} from "./apiHelper";
 
 describe("apiHelper", () => {
   beforeEach(() => {
@@ -50,5 +55,38 @@ describe("apiHelper", () => {
         headers: {},
       })
     );
+  });
+
+  it("should remove access token", () => {
+    apiHelper.putAccessToken("abc");
+    apiHelper.removeAccessToken();
+    expect(apiHelper.getAccessToken()).toBeNull();
+  });
+
+  it("should expose named exports that share the same behaviour", async () => {
+    putAccessToken("named-token");
+    expect(getAccessToken()).toBe("named-token");
+
+    const mockFetch = vi.fn().mockResolvedValue({ status: 200 });
+    global.fetch = mockFetch;
+    await fetchData("http://localhost/api", { headers: { "X-Test": "1" } });
+    expect(mockFetch).toHaveBeenCalledWith(
+      "http://localhost/api",
+      expect.objectContaining({
+        headers: { "X-Test": "1", Authorization: "Bearer named-token" },
+      })
+    );
+
+    removeAccessToken();
+    expect(getAccessToken()).toBeNull();
+  });
+
+  it("should work when options are omitted", async () => {
+    const mockFetch = vi.fn().mockResolvedValue({ status: 200 });
+    global.fetch = mockFetch;
+
+    await apiHelper.fetchData("http://localhost/api/");
+
+    expect(mockFetch).toHaveBeenCalledWith("http://localhost/api", { headers: {} });
   });
 });

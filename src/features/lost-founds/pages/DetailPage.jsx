@@ -31,6 +31,9 @@ export default function DetailPage() {
   const isLostFoundDeleted = useSelector((state) => state.isLostFoundDeleted);
   const profile = useSelector((state) => state.profile);
 
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isCoverOpen, setIsCoverOpen] = useState(false);
+
   useEffect(() => {
     if (id) {
       dispatch(asyncSetLostFoundById(id));

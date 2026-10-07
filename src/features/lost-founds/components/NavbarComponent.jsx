@@ -14,8 +14,8 @@ export default function NavbarComponent({ onToggleSidebar }) {
 
   async function onLogout() {
     setDropdownOpen(false);
-    const confirmed = await showConfirmDialog("Anda yakin ingin keluar dari aplikasi?", "Keluar");
-    if (!confirmed) return;
+    const result = await showConfirmDialog("Anda yakin ingin keluar dari aplikasi?");
+    if (!result?.isConfirmed) return;
     await dispatch(asyncSetIsAuthLogout());
     navigate("/auth/login", { replace: true });
   }

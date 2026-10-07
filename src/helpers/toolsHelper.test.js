@@ -6,6 +6,7 @@ import {
   showSuccessDialog,
   showConfirmDialog,
   formatDate,
+  getImageUrl,
 } from "./toolsHelper";
 
 vi.mock("sweetalert2", () => ({
@@ -84,5 +85,50 @@ describe("toolsHelper", () => {
     const formatted = formatDate("2024-02-26T02:34:26.000000Z");
     expect(formatted).toBeTruthy();
     expect(typeof formatted).toBe("string");
+  });
+
+  it("should run onConfirmed callback only when confirmed", async () => {
+    const onConfirmed = vi.fn();
+
+    Swal.fire.mockResolvedValue({ isConfirmed: false });
+    await showConfirmDialog("Yakin?", onConfirmed);
+    expect(onConfirmed).not.toHaveBeenCalled();
+
+    Swal.fire.mockResolvedValue({ isConfirmed: true });
+    await showConfirmDialog("Yakin?", onConfirmed);
+    expect(onConfirmed).toHaveBeenCalledTimes(1);
+
+    // Callback bukan function tidak boleh menyebabkan error
+    await expect(showConfirmDialog("Yakin?", "bukan-function")).resolves.toEqual({
+      isConfirmed: true,
+    });
+  });
+
+  it("should return fallback for invalid date string", () => {
+    expect(formatDate("bukan-tanggal")).toBe("-");
+  });
+
+  describe("getImageUrl", () => {
+    it("should return null for empty path", () => {
+      expect(getImageUrl(null)).toBeNull();
+      expect(getImageUrl("")).toBeNull();
+      expect(getImageUrl(undefined)).toBeNull();
+    });
+
+    it("should return absolute, blob, and data urls unchanged", () => {
+      expect(getImageUrl("https://example.com/a.png")).toBe("https://example.com/a.png");
+      expect(getImageUrl("http://example.com/a.png")).toBe("http://example.com/a.png");
+      expect(getImageUrl("blob:http://localhost/abc")).toBe("blob:http://localhost/abc");
+      expect(getImageUrl("data:image/png;base64,AAA")).toBe("data:image/png;base64,AAA");
+    });
+
+    it("should prefix relative path with api origin and strip leading slashes", () => {
+      const relative = getImageUrl("uploads/a.png");
+      const leading = getImageUrl("///uploads/a.png");
+
+      expect(relative.startsWith("http")).toBe(true);
+      expect(relative.endsWith("/uploads/a.png")).toBe(true);
+      expect(leading).toBe(relative);
+    });
   });
 });
