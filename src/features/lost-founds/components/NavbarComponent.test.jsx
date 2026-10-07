@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import NavbarComponent from "../NavbarComponent";
+import NavbarComponent from "./NavbarComponent";
 import { renderWithProviders } from "../../../test-utils";
 import { asyncSetIsAuthLogout } from "../../auth/states/action";
 import { showConfirmDialog } from "../../../helpers/toolsHelper";
