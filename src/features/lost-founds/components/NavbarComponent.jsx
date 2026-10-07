@@ -18,7 +18,7 @@ export default function NavbarComponent({ onToggleSidebar }) {
 
     if (!result?.isConfirmed) return;
 
-    await dispatch(asyncSetIsAuthLogout());
+    await Promise.resolve(dispatch(asyncSetIsAuthLogout()));
 
     navigate("/auth/login", { replace: true });
   }
