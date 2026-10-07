@@ -95,7 +95,9 @@ describe("UsersPage", () => {
     const pendingPromise = new Promise((resolve) => {
       resolveLoad = resolve;
     });
-    vi.spyOn(userAction, "asyncSetUsers").mockReturnValue(() => pendingPromise);
+    const setUsersSpy = vi
+      .spyOn(userAction, "asyncSetUsers")
+      .mockReturnValue(() => pendingPromise);
 
     const { unmount } = renderWithProviders(<UsersPage />, {
       preloadedState: { users: [] },
@@ -103,6 +105,8 @@ describe("UsersPage", () => {
     unmount();
     resolveLoad();
     await pendingPromise;
-    // No error = isMounted guard correctly prevents setState after unmount
+    
+    expect(setUsersSpy).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Memuat daftar pengguna...")).not.toBeInTheDocument();
   });
 });

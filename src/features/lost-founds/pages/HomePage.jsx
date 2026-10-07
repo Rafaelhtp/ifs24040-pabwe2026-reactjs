@@ -15,10 +15,12 @@ import {
   IconFilter,
 } from "@tabler/icons-react";
 
+const EMPTY_LOST_FOUNDS = [];
+
 export default function HomePage() {
   const dispatch = useDispatch();
 
-  const lostFounds = useSelector((state) => state.lostFounds || []);
+  const lostFounds = useSelector((state) => state.lostFounds ?? EMPTY_LOST_FOUNDS);
   const isLostFound = useSelector((state) => state.isLostFound);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
