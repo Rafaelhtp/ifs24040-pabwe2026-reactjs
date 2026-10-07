@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import NavbarComponent from "./NavbarComponent";
+import NavbarComponent from ".components./NavbarComponent";
 import { renderWithProviders } from "../../../test-utils";
 import { asyncSetIsAuthLogout } from "../../auth/states/action";
 import { showConfirmDialog } from "../../../helpers/toolsHelper";
@@ -12,11 +12,14 @@ vi.mock("react-router-dom", async () => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
+const withUnwrap = (value) =>
+  Object.assign(Promise.resolve(value), { unwrap: () => Promise.resolve(value) });
+
 vi.mock("../../auth/states/action", async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
-    asyncSetIsAuthLogout: vi.fn(() => () => Promise.resolve(true)),
+    asyncSetIsAuthLogout: vi.fn(() => () => withUnwrap(true)),
   };
 });
 
