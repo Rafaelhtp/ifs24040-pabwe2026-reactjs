@@ -48,7 +48,7 @@ export default function NavbarComponent({ onToggleSidebar }) {
           className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex"
           title="Status sesi"
         >
-          <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+          <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />{" "}
           Sesi aktif
         </span>
 
@@ -69,9 +69,12 @@ export default function NavbarComponent({ onToggleSidebar }) {
 
         {dropdownOpen && (
           <>
-            <div
+            <button
+              type="button"
               data-testid="dropdown-backdrop"
-              className="fixed inset-0 z-40"
+              aria-label="Tutup menu profil"
+              tabIndex={-1}
+              className="fixed inset-0 z-40 cursor-default"
               onClick={() => setDropdownOpen(false)}
             />
             <div

@@ -54,10 +54,10 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <span id="add-status-label" className="mb-1 block text-sm font-semibold text-slate-700">
               Jenis Laporan
-            </label>
-            <div className="grid grid-cols-2 gap-3">
+            </span>
+            <div role="group" aria-labelledby="add-status-label" className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setStatus("lost")}
@@ -84,10 +84,11 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <label htmlFor="add-title" className="mb-1 block text-sm font-semibold text-slate-700">
               Judul Barang
             </label>
             <input
+              id="add-title"
               type="text"
               required
               placeholder="Contoh: Kunci Motor Honda Vario Hitam"
@@ -98,10 +99,11 @@ export default function AddModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <label htmlFor="add-description" className="mb-1 block text-sm font-semibold text-slate-700">
               Deskripsi Lengkap
             </label>
             <textarea
+              id="add-description"
               required
               rows={4}
               placeholder="Jelaskan ciri-ciri barang, lokasi terakhir dilihat/ditemukan, dan kontak..."

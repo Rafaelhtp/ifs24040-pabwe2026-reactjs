@@ -48,6 +48,90 @@ export default function HomePage() {
     );
   });
 
+  let content;
+  if (isLostFound) {
+    content = (
+        <div className="flex h-64 items-center justify-center">
+          <p className="text-sm font-bold text-slate-900">
+            Memuat rincian laporan...
+          </p>
+        </div>
+    );
+  } else if (filteredList.length === 0) {
+    content = (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white py-16 text-center">
+          <IconPackage size={48} className="text-slate-400 mb-3" />
+          <p className="font-bold text-slate-800">Tidak ada laporan yang sesuai</p>
+          <p className="text-xs text-slate-600 mt-1">Coba atur ulang filter pencarian atau buat laporan baru.</p>
+        </div>
+    );
+  } else {
+    content = (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredList.map((item) => (
+            <Link
+              key={item.id}
+              to={`/lost-founds/${item.id}`}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
+            >
+              {/* Cover Gambar */}
+              <div className="relative h-48 w-full overflow-hidden bg-slate-100">
+                {item.cover ? (
+                  <img
+                    src={item.cover}
+                    alt=""
+                    aria-hidden="true"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full flex-col items-center justify-center text-slate-400">
+                    <IconPackage size={40} />
+                    <span className="text-xs font-semibold text-slate-700 mt-1">
+                      Tanpa Foto Cover
+                    </span>
+                  </div>
+                )}
+                {/* Badges dengan kontras tinggi (bg-rose-700 & bg-emerald-700) */}
+                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                  <span
+                    className={`rounded-lg px-2.5 py-1 text-xs font-bold text-white shadow-xs ${
+                      item.status === "lost" ? "bg-rose-700" : "bg-emerald-700"
+                    }`}
+                  >
+                    {item.status === "lost" ? "HILANG" : "DITEMUKAN"}
+                  </span>
+                  {item.is_completed ? (
+                    <span className="rounded-lg bg-blue-700 px-2.5 py-1 text-xs font-bold text-white shadow-xs">
+                      SELESAI
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* Detail Konten (h2 digunakan agar hierarki heading berurutan) */}
+              <div className="flex flex-1 flex-col p-4">
+                <h2 className="line-clamp-1 font-bold text-slate-900 group-hover:text-blue-700 text-base">
+                  {item.title}
+                </h2>
+                <p className="mt-1 line-clamp-2 text-xs text-slate-700 flex-1 leading-relaxed">
+                  {item.description}
+                </p>
+                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-700">
+                  <span className="flex items-center gap-1 font-medium">
+                    <IconClock size={14} className="text-slate-600" />
+                    {formatDate ? formatDate(item.created_at) : item.created_at?.slice(0, 10)}
+                  </span>
+                  <span className="font-bold text-slate-900">
+                    {item.user?.name || "Pelapor"}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -189,82 +273,7 @@ export default function HomePage() {
       </div>
 
       {/* Grid Kartu Laporan */}
-      {isLostFound ? (
-        <div className="flex h-64 items-center justify-center">
-          <p className="text-sm font-bold text-slate-900">
-            Memuat rincian laporan...
-          </p>
-        </div>
-      ) : filteredList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white py-16 text-center">
-          <IconPackage size={48} className="text-slate-400 mb-3" />
-          <p className="font-bold text-slate-800">Tidak ada laporan yang sesuai</p>
-          <p className="text-xs text-slate-600 mt-1">Coba atur ulang filter pencarian atau buat laporan baru.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredList.map((item) => (
-            <Link
-              key={item.id}
-              to={`/lost-founds/${item.id}`}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
-            >
-              {/* Cover Gambar */}
-              <div className="relative h-48 w-full overflow-hidden bg-slate-100">
-                {item.cover ? (
-                  <img
-                    src={item.cover}
-                    alt=""
-                    aria-hidden="true"
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center text-slate-400">
-                    <IconPackage size={40} />
-                    <span className="text-xs font-semibold text-slate-700 mt-1">
-                      Tanpa Foto Cover
-                    </span>
-                  </div>
-                )}
-                {/* Badges dengan kontras tinggi (bg-rose-700 & bg-emerald-700) */}
-                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                  <span
-                    className={`rounded-lg px-2.5 py-1 text-xs font-bold text-white shadow-xs ${
-                      item.status === "lost" ? "bg-rose-700" : "bg-emerald-700"
-                    }`}
-                  >
-                    {item.status === "lost" ? "HILANG" : "DITEMUKAN"}
-                  </span>
-                  {item.is_completed ? (
-                    <span className="rounded-lg bg-blue-700 px-2.5 py-1 text-xs font-bold text-white shadow-xs">
-                      SELESAI
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-
-              {/* Detail Konten (h2 digunakan agar hierarki heading berurutan) */}
-              <div className="flex flex-1 flex-col p-4">
-                <h2 className="line-clamp-1 font-bold text-slate-900 group-hover:text-blue-700 text-base">
-                  {item.title}
-                </h2>
-                <p className="mt-1 line-clamp-2 text-xs text-slate-700 flex-1 leading-relaxed">
-                  {item.description}
-                </p>
-                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-700">
-                  <span className="flex items-center gap-1 font-medium">
-                    <IconClock size={14} className="text-slate-600" />
-                    {formatDate ? formatDate(item.created_at) : item.created_at?.slice(0, 10)}
-                  </span>
-                  <span className="font-bold text-slate-900">
-                    {item.user?.name || "Pelapor"}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      {content}
 
       <AddModal
         isOpen={isAddOpen}

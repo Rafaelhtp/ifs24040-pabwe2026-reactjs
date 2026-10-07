@@ -39,10 +39,10 @@ export default function LostFoundLayout() {
     return (
       <main id="main-content" role="main" tabIndex="-1" className="flex min-h-screen items-center justify-center bg-slate-50 outline-none">
         <h1 className="sr-only">Memverifikasi Sesi Pengguna</h1>
-        <div role="status" className="flex items-center">
+        <output className="flex items-center">
           <IconLoader2 size={32} className="animate-spin text-blue-700" aria-hidden="true" />
           <span className="ml-3 text-sm font-medium text-slate-700">Memverifikasi sesi...</span>
-        </div>
+        </output>
       </main>
     );
   }

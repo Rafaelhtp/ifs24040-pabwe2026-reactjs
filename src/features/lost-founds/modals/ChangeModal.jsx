@@ -67,10 +67,10 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <span id="change-status-label" className="mb-1 block text-sm font-semibold text-slate-700">
               Jenis Laporan
-            </label>
-            <div className="grid grid-cols-2 gap-3">
+            </span>
+            <div role="group" aria-labelledby="change-status-label" className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setStatus("lost")}
@@ -97,10 +97,11 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <label htmlFor="change-title" className="mb-1 block text-sm font-semibold text-slate-700">
               Judul Barang
             </label>
             <input
+              id="change-title"
               type="text"
               required
               value={title}
@@ -110,10 +111,11 @@ export default function ChangeModal({ isOpen, onClose, item, onSuccess }) {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">
+            <label htmlFor="change-description" className="mb-1 block text-sm font-semibold text-slate-700">
               Deskripsi Lengkap
             </label>
             <textarea
+              id="change-description"
               required
               rows={4}
               value={description}

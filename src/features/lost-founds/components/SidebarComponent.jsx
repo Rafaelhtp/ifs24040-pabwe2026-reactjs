@@ -35,9 +35,12 @@ export default function SidebarComponent({ isOpen = false, onClose = () => {} })
   return (
     <>
       {isOpen && (
-        <div
+        <button
+          type="button"
           data-testid="sidebar-backdrop"
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+          aria-label="Tutup menu"
+          tabIndex={-1}
+          className="fixed inset-0 z-40 cursor-default bg-slate-900/40 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}

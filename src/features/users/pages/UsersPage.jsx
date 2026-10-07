@@ -32,11 +32,67 @@ export default function UsersPage() {
   const filteredUsers = (users || []).filter((u) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
-    return (
-      (u.name && u.name.toLowerCase().includes(q)) ||
-      (u.email && u.email.toLowerCase().includes(q))
+    return Boolean(
+      u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q),
     );
   });
+
+  let content;
+  if (loadingUsers && filteredUsers.length === 0) {
+    content = (
+            <div className="col-span-full py-16 text-center text-slate-500">
+              <IconLoader2 size={36} className="mx-auto text-blue-600 animate-spin mb-2" />
+              <p className="font-medium text-slate-700">Memuat daftar pengguna...</p>
+            </div>
+    );
+  } else if (filteredUsers.length === 0) {
+    content = (
+            <div className="col-span-full py-12 text-center text-slate-500">
+              <IconUsers size={40} className="mx-auto text-slate-400 mb-2" />
+              <p className="font-medium text-slate-700">Tidak ada data pengguna ditemukan.</p>
+            </div>
+    );
+  } else {
+    content = (
+            filteredUsers.map((u) => (
+              <div
+                key={`user-${u.id}`}
+                data-testid={`user-card-${u.id}`}
+                className="p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all bg-white flex flex-col justify-between"
+              >
+                <div className="flex items-start gap-3.5">
+                  {u.photo ? (
+                    <img
+                      src={u.photo}
+                      alt={u.name || "Foto Pengguna"}
+                      className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-600 text-white flex items-center justify-center font-bold text-base shrink-0">
+                      {u.name?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    <h2 className="font-bold text-slate-900 truncate text-base">{u.name || "Anonim"}</h2>
+                    <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5 truncate font-medium">
+                      <IconMail size={14} className="shrink-0 text-slate-600" />
+                      <span className="truncate">{u.email || "-"}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-700 font-medium">
+                  <span className="font-mono font-semibold text-slate-700">ID: #{u.id}</span>
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <IconCalendar size={13} className="text-slate-600" />
+                    {u.created_at ? formatDate(u.created_at) : "-"}
+                  </span>
+                </div>
+              </div>
+            ))
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -75,55 +131,7 @@ export default function UsersPage() {
 
         {/* User Grid */}
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {loadingUsers && filteredUsers.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-slate-500">
-              <IconLoader2 size={36} className="mx-auto text-blue-600 animate-spin mb-2" />
-              <p className="font-medium text-slate-700">Memuat daftar pengguna...</p>
-            </div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-slate-500">
-              <IconUsers size={40} className="mx-auto text-slate-400 mb-2" />
-              <p className="font-medium text-slate-700">Tidak ada data pengguna ditemukan.</p>
-            </div>
-          ) : (
-            filteredUsers.map((u) => (
-              <div
-                key={`user-${u.id}`}
-                data-testid={`user-card-${u.id}`}
-                className="p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all bg-white flex flex-col justify-between"
-              >
-                <div className="flex items-start gap-3.5">
-                  {u.photo ? (
-                    <img
-                      src={u.photo}
-                      alt={u.name || "Foto Pengguna"}
-                      className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-600 text-white flex items-center justify-center font-bold text-base shrink-0">
-                      {u.name?.charAt(0)?.toUpperCase() || "U"}
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-bold text-slate-900 truncate text-base">{u.name || "Anonim"}</h2>
-                    <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5 truncate font-medium">
-                      <IconMail size={14} className="shrink-0 text-slate-600" />
-                      <span className="truncate">{u.email || "-"}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-700 font-medium">
-                  <span className="font-mono font-semibold text-slate-700">ID: #{u.id}</span>
-                  <span className="flex items-center gap-1 text-slate-700">
-                    <IconCalendar size={13} className="text-slate-600" />
-                    {u.created_at ? formatDate(u.created_at) : "-"}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
+          {content}
         </div>
       </div>
     </div>
